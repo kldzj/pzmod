@@ -34,7 +34,7 @@ export async function readServerConfig(path: string, backup: boolean): Promise<S
     await fs.writeFile(backupPath, file);
   }
 
-  const lines = file.split(EOL);
+  const lines = file.split(/\r\n|\r|\n/);
   const config: ServerConfig = {};
 
   let comments: string[] = [];
@@ -65,7 +65,7 @@ export async function saveServerConfig(path: string, config: ServerConfig) {
   const lines: string[] = [];
 
   for (const [key, { comments, value }] of Object.entries(config)) {
-    lines.push(...comments.map((comment) => comment.replace(new RegExp(`${EOL}$`), '')));
+    lines.push(...comments.map((comment) => comment.replace(/[\r\n|\r|\n]$/, '')));
     lines.push(`${key}=${value}`);
     lines.push(EOL);
   }
