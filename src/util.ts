@@ -1,6 +1,19 @@
 import chalk from 'chalk';
 import { ModEntry } from './workshop';
 
+export function chunk<T>(array: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+
+  return chunks;
+}
+
+export function dedupe<T>(array: T[]): T[] {
+  return [...new Set(array)];
+}
+
 export function workshopURL(workshopId: string): string {
   return `https://steamcommunity.com/sharedfiles/filedetails/?id=${workshopId}`;
 }

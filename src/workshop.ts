@@ -1,4 +1,6 @@
 import fetch from '@adobe/node-fetch-retry';
+import chalk from 'chalk';
+import { chunk, dedupe } from './util';
 
 export interface ModEntry {
   workshopId: string;
@@ -13,18 +15,10 @@ export interface ModEntry {
 
 const cache = new Map<string, ModEntry>();
 
-function chunk<T>(array: T[], size: number): T[][] {
-  const chunks: T[][] = [];
-  for (let i = 0; i < array.length; i += size) {
-    chunks.push(array.slice(i, i + size));
-  }
-  return chunks;
-}
-
 function parseModIds(description: string): string[] {
   const regex = /Mod ID: (.+)\n?$/gm;
   const matches = [...description.matchAll(regex)];
-  return matches.map((match) => match[1]);
+  return dedupe(matches.map((match) => match[1]));
 }
 
 function getURLParams(key: string, workshopIds: string[]): string {
@@ -60,22 +54,38 @@ async function getPublishedItemsDetailsChunk(key: string, workshopIds: string[])
     throw new Error(`Failed to fetch Workshop Items: ${json.response?.error ?? 'Unknown error'}`);
   }
 
-  const fetched = items.map((item: any) => ({
-    workshopId: item.publishedfileid,
-    modIds: parseModIds(item.file_description),
-    children: item.children?.map((child: any) => child.publishedfileid) ?? [],
-    creator: item.creator,
-    title: item.title,
-    description: item.file_description,
-    tags: item.tags?.map((tag: any) => tag.display_name) ?? [],
-    banned: item.banned,
-  }));
+  const fetched: ModEntry[] = items.reduce((acc: ModEntry[], item: any) => {
+    if (item.result !== 1) {
+      const parts = [
+        chalk.red('[ERROR]'),
+        `Error fetching Workshop Item ${item.publishedfileid}: ${item.result},`,
+        'you might want to remove it from your mod list.',
+      ];
+
+      console.error(parts.join(' '));
+      return acc;
+    }
+
+    return [
+      ...acc,
+      {
+        workshopId: item.publishedfileid,
+        modIds: parseModIds(item.file_description),
+        children: item.children?.map((child: any) => child.publishedfileid) ?? [],
+        creator: item.creator,
+        title: item.title,
+        description: item.file_description,
+        tags: item.tags?.map((tag: any) => tag.display_name) ?? [],
+        banned: item.banned,
+      },
+    ];
+  }, []);
 
   for (const item of fetched) {
     cache.set(item.workshopId, item);
   }
 
-  return [...unfetchedIds.map((id) => cache.get(id)), ...fetched];
+  return [...unfetchedIds.map((id) => cache.get(id)!), ...fetched];
 }
 
 export async function getPublishedItemsDetails(key: string, workshopIds: string[]): Promise<ModEntry[]> {

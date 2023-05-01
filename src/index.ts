@@ -92,6 +92,7 @@ async function main() {
             config.apiKey!,
             getFromServerConfig(serverConfig, 'WorkshopItems')
           );
+
           const childIds = items.reduce<string[]>(
             (acc, item) => (item.children.length ? [...acc, ...item.children] : acc),
             []
@@ -197,7 +198,7 @@ async function main() {
                 ]);
 
                 if (!workshopId) {
-                  console.error(`${chalk.red('[ERROR]')} Workshop ID cannot be empty`);
+                  more = false;
                   continue;
                 }
 
@@ -224,12 +225,12 @@ async function main() {
                     message: 'Where would you like to add this mod?',
                     choices: [
                       {
-                        name: 'Add to the beginning of the list',
-                        value: START_OF_LIST,
-                      },
-                      {
                         name: 'Add to the end of the list',
                         value: END_OF_LIST,
+                      },
+                      {
+                        name: 'Add to the beginning of the list',
+                        value: START_OF_LIST,
                       },
                       ...modIds
                         .filter((modId) => !item.modIds.includes(modId))
