@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	ErrFileNotFound = errors.New("File not found")
-	ErrFileExists   = errors.New("File already exists")
-	ErrInvalidKey   = errors.New("Invalid key")
+	ErrFileNotFound = errors.New("file not found")
+	ErrFileExists   = errors.New("file already exists")
+	ErrInvalidKey   = errors.New("invalid key")
 )
