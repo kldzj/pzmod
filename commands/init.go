@@ -9,4 +9,5 @@ func Init(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(cmdSet())
 	rootCmd.AddCommand(cmdSetApiKey())
 	rootCmd.AddCommand(cmdCopyConfig())
+	rootCmd.AddCommand(cmdUpdate())
 }
