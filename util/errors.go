@@ -9,4 +9,5 @@ var (
 	ErrFileExists   = errors.New("file already exists")
 	ErrInvalidKey   = errors.New("invalid key")
 	ErrVerNotSet    = errors.New("version not set")
+	ErrNoApiKey     = errors.New("no Steam API key set")
 )

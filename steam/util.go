@@ -4,6 +4,9 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/kldzj/pzmod/util"
+	"github.com/spf13/cobra"
 )
 
 const (
@@ -19,7 +22,7 @@ func SetApiKey(key string) {
 
 func getApiKey() string {
 	if steamApiKey == "" {
-		panic("Steam API key not set")
+		cobra.CheckErr(util.ErrNoApiKey)
 	}
 
 	return steamApiKey
@@ -32,7 +35,7 @@ func newHttpClient() *http.Client {
 func constructSteamApiUrl(path string) (*url.URL, *url.Values) {
 	url, err := url.Parse("https://api.steampowered.com" + path)
 	if err != nil {
-		panic(err)
+		cobra.CheckErr(err)
 	}
 
 	query := url.Query()
