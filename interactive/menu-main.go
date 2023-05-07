@@ -87,8 +87,18 @@ func cmdSetApiKey(cmd *cobra.Command, config *ini.ServerConfig) {
 		Help:    "Get your API key from https://steamcommunity.com/dev/apikey",
 	}
 
-	survey.AskOne(prompt, &apiKey)
-	err := util.StoreCredentials(apiKey)
+	err := survey.AskOne(prompt, &apiKey)
+	if err != nil {
+		fmt.Println(util.Error, err)
+		return
+	}
+
+	if len(apiKey) != 32 {
+		fmt.Println(util.Warning, "Invalid API key.")
+		return
+	}
+
+	err = util.StoreCredentials(apiKey)
 	if err != nil {
 		fmt.Println(util.Warning, "Failed to store API key.")
 	}
