@@ -1,8 +1,6 @@
 package interactive
 
 import (
-	"fmt"
-
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/AlecAivazis/survey/v2/terminal"
 	"github.com/kldzj/pzmod/config"
@@ -30,7 +28,7 @@ var cmdMap = map[string]func(*cobra.Command, *ini.ServerConfig){
 func Execute(cmd *cobra.Command, args []string) {
 	config, err := config.LoadConfig(cmd)
 	if err != nil {
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return
 	}
 
@@ -38,7 +36,7 @@ func Execute(cmd *cobra.Command, args []string) {
 	for cont {
 		cont = mainMenu(cmd, config)
 		if cont {
-			fmt.Println()
+			cmd.Println()
 		}
 	}
 }
@@ -62,7 +60,7 @@ func mainMenu(cmd *cobra.Command, config *ini.ServerConfig) bool {
 			return cmdExit(cmd, config)
 		}
 
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return true
 	}
 
@@ -74,7 +72,7 @@ func mainMenu(cmd *cobra.Command, config *ini.ServerConfig) bool {
 	if fn != nil {
 		fn(cmd, config)
 	} else {
-		fmt.Printf("%s Unknown command: %s\n", util.Error, mainMenuResult)
+		cmd.Printf("%s Unknown command: %s\n", util.Error, mainMenuResult)
 	}
 
 	return true
@@ -89,18 +87,18 @@ func cmdSetApiKey(cmd *cobra.Command, config *ini.ServerConfig) {
 
 	err := survey.AskOne(prompt, &apiKey)
 	if err != nil {
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return
 	}
 
 	if len(apiKey) != 32 {
-		fmt.Println(util.Warning, "Invalid API key.")
+		cmd.Println(util.Warning, "Invalid API key.")
 		return
 	}
 
 	err = util.StoreCredentials(apiKey)
 	if err != nil {
-		fmt.Println(util.Warning, "Failed to store API key.")
+		cmd.Println(util.Warning, "Failed to store API key.")
 	}
 
 	steam.SetApiKey(apiKey)
@@ -109,7 +107,7 @@ func cmdSetApiKey(cmd *cobra.Command, config *ini.ServerConfig) {
 func cmdExit(cmd *cobra.Command, config *ini.ServerConfig) bool {
 	hasChanged := config.HasUnsavedChanges()
 	if hasChanged {
-		fmt.Println(util.Warning, "You have unsaved changes.")
+		cmd.Println(util.Warning, "You have unsaved changes.")
 	}
 
 	var confirmExit = &survey.Confirm{

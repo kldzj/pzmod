@@ -1,8 +1,6 @@
 package interactive
 
 import (
-	"fmt"
-
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/AlecAivazis/survey/v2/terminal"
 	"github.com/kldzj/pzmod/ini"
@@ -36,7 +34,7 @@ func cmdModifyMenu(cmd *cobra.Command, config *ini.ServerConfig) {
 	for cont {
 		cont = modifyMenu(cmd, config)
 		if cont {
-			fmt.Println()
+			cmd.Println()
 		}
 	}
 }
@@ -63,7 +61,7 @@ func modifyMenu(cmd *cobra.Command, config *ini.ServerConfig) bool {
 			return false
 		}
 
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return true
 	}
 
@@ -75,7 +73,7 @@ func modifyMenu(cmd *cobra.Command, config *ini.ServerConfig) bool {
 	if fn != nil {
 		fn(cmd, config)
 	} else {
-		fmt.Printf("%s Unknown command: %s\n", util.Error, modifyMenuResult)
+		cmd.Printf("%s Unknown command: %s\n", util.Error, modifyMenuResult)
 	}
 
 	return true

@@ -1,7 +1,6 @@
 package interactive
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -59,15 +58,15 @@ func cmdUpdateServerInfo(cmd *cobra.Command, config *ini.ServerConfig) {
 
 	err := survey.Ask(qs, &answers)
 	if err != nil {
-		fmt.Println(util.Error, err)
-		fmt.Println(util.Warning, "Server info not updated")
+		cmd.Println(util.Error, err)
+		cmd.Println(util.Warning, "Server info not updated")
 		return
 	}
 
 	config.Set(util.CfgKeyName, answers.Name)
 	config.Set(util.CfgKeyDesc, strings.Join(strings.Split(strings.TrimSpace(answers.Description), "\n"), "<line>"))
-	config.Set(util.CfgKeyPub, fmt.Sprintf("%t", answers.Public))
+	config.Set(util.CfgKeyPub, cmd.Sprintf("%t", answers.Public))
 	config.Set(util.CfgKeyPass, answers.Password)
 	config.Set(util.CfgKeyMax, answers.MaxPlayers)
-	fmt.Println(util.OK, "Updated server info")
+	cmd.Println(util.OK, "Updated server info")
 }

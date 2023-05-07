@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/creativeprojects/go-selfupdate"
@@ -31,7 +30,7 @@ func IsLatest(current string, latest *selfupdate.Release) bool {
 
 func Update(current string, latest *selfupdate.Release) error {
 	if IsLatest(current, latest) {
-		log.Printf("Current version %s is the latest", current)
+		fmt.Printf("Current version %s is the latest", current)
 		return nil
 	}
 
@@ -44,6 +43,6 @@ func Update(current string, latest *selfupdate.Release) error {
 		return fmt.Errorf("error occurred while updating binary: %w", err)
 	}
 
-	log.Printf("Successfully updated to version %s", latest.Version())
+	fmt.Printf("Successfully updated to version %s", latest.Version())
 	return nil
 }
