@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/kldzj/pzmod/ini"
 	"github.com/kldzj/pzmod/steam"
 	"github.com/kldzj/pzmod/util"
@@ -12,7 +10,7 @@ import (
 func LoadConfig(cmd *cobra.Command) (*ini.ServerConfig, error) {
 	apiKey, err := util.LoadCredentials()
 	if err != nil {
-		fmt.Println(util.Warning, "Steam API key not found")
+		cmd.Println(util.Warning, "Steam API key not found")
 	} else {
 		steam.SetApiKey(apiKey)
 	}

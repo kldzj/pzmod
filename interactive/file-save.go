@@ -1,7 +1,6 @@
 package interactive
 
 import (
-	"fmt"
 	"os"
 	"path"
 
@@ -14,10 +13,10 @@ import (
 func cmdSaveConfig(cmd *cobra.Command, config *ini.ServerConfig) {
 	err := config.Save()
 	if err != nil {
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return
 	} else {
-		fmt.Println(util.OK, "Saved to", config.Path)
+		cmd.Println(util.OK, "Saved to", config.Path)
 	}
 }
 
@@ -30,14 +29,14 @@ func cmdSaveConfigTo(cmd *cobra.Command, config *ini.ServerConfig) {
 
 	survey.AskOne(prompt, &configPath)
 	if configPath == "" || configPath == config.Path {
-		fmt.Println(util.Warning, "Path not changed")
+		cmd.Println(util.Warning, "Path not changed")
 		return
 	}
 
 	if !path.IsAbs(configPath) {
 		cwd, err := os.Getwd()
 		if err != nil {
-			fmt.Println(util.Error, err)
+			cmd.Println(util.Error, err)
 			return
 		}
 
@@ -45,24 +44,24 @@ func cmdSaveConfigTo(cmd *cobra.Command, config *ini.ServerConfig) {
 	}
 
 	if util.IsDir(configPath) {
-		fmt.Println(util.Error, "Path is a directory")
+		cmd.Println(util.Error, "Path is a directory")
 		return
 	}
 
 	if util.FileExists(configPath) {
 		if !ConfirmOverwrite(configPath) {
-			fmt.Println(util.Warning, "Not saved")
+			cmd.Println(util.Warning, "Not saved")
 			return
 		}
 
-		fmt.Println(util.Warning, "Overwriting", configPath)
+		cmd.Println(util.Warning, "Overwriting", configPath)
 	}
 
 	err := config.SaveTo(configPath)
 	if err != nil {
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return
 	} else {
-		fmt.Println(util.OK, "Saved to", configPath)
+		cmd.Println(util.OK, "Saved to", configPath)
 	}
 }

@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/kldzj/pzmod/util"
 	"github.com/spf13/cobra"
 )
@@ -27,7 +25,7 @@ func cmdSetApiKey() *cobra.Command {
 			err := util.StoreCredentials(args[0])
 			cobra.CheckErr(err)
 
-			fmt.Println("API key set successfully")
+			cmd.Println("API key set successfully")
 		},
 	}
 

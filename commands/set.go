@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/kldzj/pzmod/config"
@@ -78,5 +77,5 @@ func listAvailableConfigKeys(cmd *cobra.Command) {
 
 	msg := "Available config keys: "
 	msg += strings.Join(keys, ", ")
-	fmt.Println(msg)
+	cmd.Println(msg)
 }

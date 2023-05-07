@@ -1,8 +1,6 @@
 package interactive
 
 import (
-	"fmt"
-
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/kldzj/pzmod/ini"
 	"github.com/kldzj/pzmod/steam"
@@ -19,50 +17,50 @@ func cmdAddModsFromCollection(cmd *cobra.Command, config *ini.ServerConfig) {
 
 	err := survey.AskOne(prompt, &id)
 	if err != nil {
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return
 	}
 
-	fmt.Println(util.Info, "Fetching collection, this may take a while...")
+	cmd.Println(util.Info, "Fetching collection, this may take a while...")
 	items, missing, err := steam.FetchWorkshopItems([]string{id})
 	if err != nil {
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return
 	}
 
 	if len(*missing) > 0 {
-		fmt.Println(util.Warning, "Could not fetch", (*missing)[0])
+		cmd.Println(util.Warning, "Could not fetch", (*missing)[0])
 		return
 	}
 
 	collection := (*items)[0]
 	if collection.FileType != steam.FileTypeCollection {
-		fmt.Println(util.Error, "Invalid collection")
+		cmd.Println(util.Error, "Invalid collection")
 		return
 	}
 
 	children := collection.GetChildIDs()
 	items, missing, err = steam.FetchWorkshopItems(children)
 	if err != nil {
-		fmt.Println(util.Error, err)
+		cmd.Println(util.Error, err)
 		return
 	}
 
 	if len(*missing) > 0 {
-		fmt.Println(util.Warning, "Could not fetch the following items:")
+		cmd.Println(util.Warning, "Could not fetch the following items:")
 		for _, id := range *missing {
-			fmt.Println(util.Warning, " -", id)
+			cmd.Println(util.Warning, " -", id)
 		}
 	}
 
 	if len(*items) == 0 {
-		fmt.Println(util.Warning, "No items found")
+		cmd.Println(util.Warning, "No items found")
 		return
 	}
 
-	fmt.Println(util.Info, "If you want to skip specific mods, simply select no mod ids when prompted")
-	fmt.Println(util.Info, "Press Ctrl+C to stop adding mods, note that this will save the mods you have already added")
-	fmt.Println()
+	cmd.Println(util.Info, "If you want to skip specific mods, simply select no mod ids when prompted")
+	cmd.Println(util.Info, "Press Ctrl+C to stop adding mods, note that this will save the mods you have already added")
+	cmd.Println()
 
 	addedCount := 0
 	for _, item := range *items {
@@ -73,17 +71,17 @@ func cmdAddModsFromCollection(cmd *cobra.Command, config *ini.ServerConfig) {
 			link = util.Paren(link)
 		}
 
-		fmt.Println(util.Info, "Adding", util.Quote(item.Title), link)
+		cmd.Println(util.Info, "Adding", util.Quote(item.Title), link)
 		cont, added := addMod(item.PublishedFileID, config)
 		if added {
 			addedCount++
 		}
 
-		fmt.Println()
+		cmd.Println()
 		if !cont {
 			break
 		}
 	}
 
-	fmt.Println(util.OK, "Added", addedCount, "mods")
+	cmd.Println(util.OK, "Added", addedCount, "mods")
 }
