@@ -2,9 +2,13 @@ name: Install Test CI
 on:
   push:
     paths:
+      - '.github/workflows/test-install.yml'
+      - '.github/Dockerfile.test'
       - 'install.sh'
   pull_request:
     paths:
+      - '.github/workflows/test-install.yml'
+      - '.github/Dockerfile.test'
       - 'install.sh'
 
 jobs:
@@ -32,4 +36,4 @@ jobs:
             --platform=linux/${{ matrix.arch }} \
             -t test-install:${{ matrix.arch }} \
             -f .github/Dockerfile.test .
-          docker run --rm test-install:${{ matrix.arch }} -h
+          docker run --rm test-install:${{ matrix.arch }} help
