@@ -65,7 +65,7 @@ func cmdUpdateServerInfo(cmd *cobra.Command, config *ini.ServerConfig) {
 
 	config.Set(util.CfgKeyName, answers.Name)
 	config.Set(util.CfgKeyDesc, strings.Join(strings.Split(strings.TrimSpace(answers.Description), "\n"), "<line>"))
-	config.Set(util.CfgKeyPub, cmd.Sprintf("%t", answers.Public))
+	config.Set(util.CfgKeyPub, util.BoolString(answers.Public))
 	config.Set(util.CfgKeyPass, answers.Password)
 	config.Set(util.CfgKeyMax, answers.MaxPlayers)
 	cmd.Println(util.OK, "Updated server info")
