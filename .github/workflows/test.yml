@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - go-rewrite # TODO: remove this line
   pull_request:
     branches:
       - main
