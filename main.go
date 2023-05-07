@@ -23,8 +23,13 @@ pzmod --file server.ini set name "My Server"`,
 				return
 			}
 
+			updater, err := version.NewUpdater()
+			if err != nil {
+				return
+			}
+
 			ver := version.Get()
-			latest, err := version.GetLatestRelease()
+			latest, err := version.GetLatestRelease(updater)
 			if err != nil {
 				return
 			}

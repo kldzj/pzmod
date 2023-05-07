@@ -15,8 +15,11 @@ func cmdUpdate() *cobra.Command {
 				cobra.CheckErr(util.ErrVerNotSet)
 			}
 
+			updater, err := version.NewUpdater()
+			cobra.CheckErr(err)
+
 			ver := version.Get()
-			latest, err := version.GetLatestRelease()
+			latest, err := version.GetLatestRelease(updater)
 			cobra.CheckErr(err)
 
 			if version.IsLatest(ver, latest) {
@@ -30,7 +33,7 @@ func cmdUpdate() *cobra.Command {
 				return
 			}
 
-			err = version.Update(ver, latest)
+			err = version.Update(ver, latest, updater)
 			cobra.CheckErr(err)
 		},
 	}
