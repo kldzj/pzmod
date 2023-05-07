@@ -2,25 +2,26 @@ name: GitHub Release CI
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - '*'
+
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Node
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
         with:
-          node-version: '16'
-      - name: Install dependencies
-        run: yarn --ignore-scripts --frozen-lockfile --non-interactive
-      - name: Build binaries
-        run: yarn build
-      - name: Release
-        uses: softprops/action-gh-release@v1
+          fetch-depth: 0
+      - run: git fetch --force --tags
+      - uses: actions/setup-go@v4
         with:
-          prerelease: contains(github.ref, '-')
-          generate_release_notes: true
-          fail_on_unmatched_files: true
-          files: build/*
+          go-version: stable
+      - uses: goreleaser/goreleaser-action@v4
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

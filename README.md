@@ -14,8 +14,17 @@
 ### Usage
 
 ```bash
+# Will launch in interactive mode
 pzmod --file path/to/servertest.ini
+
+# Will set the servers public name
+pzmod --file path/to/servertest.ini set name "My Server"
+
+# Will list the available keys to set through the CLI
+pzmod --file path/to/servertest.ini get list
 ```
+
+A list of available commands can be found by running `pzmod --help`.
 
 ### Requirements
 
@@ -26,6 +35,4 @@ pzmod --file path/to/servertest.ini
 
 You can download the latest version of **pzmod** from the [releases page](https://github.com/kldzj/pzmod/releases).
 
-### Hint
-
-Dependencies are not automatically installed. After adding a mod that has dependencies, you'll see an error message including the Workshop IDs of the missing dependencies. You have to install them manually.
+> Note: v2 is currently in pre-release. Bug reports and feedback are welcome.
