@@ -45,4 +45,18 @@ curl -fsSL https://raw.githubusercontent.com/kldzj/pzmod/main/install.sh | bash 
 curl -fsSL https://raw.githubusercontent.com/kldzj/pzmod/main/install.sh | bash -s -- /home/user/bin/pzmod
 ```
 
+or if you are more of a 'do not pipe to shell' kind of person:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kldzj/pzmod/main/install.sh -o install.sh
+less install.sh # Read the script to make sure it is safe
+chmod +x install.sh
+
+# Will install the latest version of pzmod to /usr/local/bin
+./install.sh
+
+# To override the install location, pass the target as an argument
+./install.sh /home/user/bin/pzmod
+```
+
 > Note: v2 is currently in pre-release. Bug reports and feedback are welcome.
