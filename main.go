@@ -10,8 +10,9 @@ import (
 
 func main() {
 	var rootCmd = &cobra.Command{
-		Use:   "pzmod --file <server config file>",
-		Short: "pzmod is a tool for managing Project Zomboid server mods.",
+		Use:     "pzmod --file <server config file>",
+		Short:   "pzmod is a tool for managing Project Zomboid server mods.",
+		Version: version.Get(),
 		Example: `pzmod --file server.ini
 pzmod --file server.ini get list
 pzmod --file server.ini get name
