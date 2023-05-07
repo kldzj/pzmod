@@ -1,4 +1,4 @@
-name: Install Test
+name: Install Test CI
 on:
   push:
     paths:
@@ -28,8 +28,8 @@ jobs:
         run: |
           echo "Testing on ${{ matrix.os }} (${{ matrix.arch }})"
           docker buildx build --load \
-            --platform=linux/${{ matrix.arch }} \
             --build-arg BASE_IMAGE=${{ matrix.os }} \
+            --platform=linux/${{ matrix.arch }} \
             -t test-install:${{ matrix.arch }} \
-            -f Dockerfile.test .
+            -f .github/Dockerfile.test .
           docker run --rm test-install:${{ matrix.arch }} -h
