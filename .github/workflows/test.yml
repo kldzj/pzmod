@@ -18,7 +18,5 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: stable
-      - run: |
-          version=$(git describe --tags --abbrev=0)
-          echo -n $version > ./version/version.txt
+      - run: go generate ./...
       - run: go test ./test
