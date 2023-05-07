@@ -47,6 +47,20 @@ func LoadCredentials() (string, error) {
 	return string(bytes), nil
 }
 
+func DeleteCredentials() error {
+	path, err := GetCredentialsPath()
+	if err != nil {
+		return err
+	}
+
+	err = os.Remove(path)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetCredentialsPath() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
