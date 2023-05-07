@@ -34,7 +34,8 @@ func cmdCopyConfig() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolP("force", "f", false, "overwrite existing file")
+	cmd.Flags().BoolP("force", "F", false, "overwrite existing file")
+	SetFileFlag(cmd)
 
 	return cmd
 }

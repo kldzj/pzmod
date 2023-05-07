@@ -65,6 +65,7 @@ func cmdSet() *cobra.Command {
 	}
 
 	cmd.Flags().BoolP("no-save", "n", false, "do not save to file")
+	SetFileFlag(cmd)
 
 	return cmd
 }

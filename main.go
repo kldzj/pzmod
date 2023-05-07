@@ -37,10 +37,7 @@ pzmod --file server.ini set name "My Server"`,
 		},
 	}
 
-	rootCmd.PersistentFlags().StringP("file", "f", "", "server config file path")
-	rootCmd.MarkPersistentFlagFilename("file", "ini")
-	rootCmd.MarkPersistentFlagRequired("file")
-
+	commands.SetFileFlag(rootCmd)
 	commands.Init(rootCmd)
 	rootCmd.Execute()
 }

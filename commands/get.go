@@ -31,5 +31,7 @@ func cmdGet() *cobra.Command {
 		},
 	}
 
+	SetFileFlag(cmd)
+
 	return cmd
 }
