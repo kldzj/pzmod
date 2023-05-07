@@ -35,4 +35,14 @@ A list of available commands can be found by running `pzmod --help`.
 
 You can download the latest version of **pzmod** from the [releases page](https://github.com/kldzj/pzmod/releases).
 
+Linux users can also install **pzmod** using the following command:
+
+```bash
+# Will install the latest version of pzmod to /usr/local/bin
+curl -fsSL https://raw.githubusercontent.com/kldzj/pzmod/main/install.sh | bash -s
+
+# To override the install location, pass the target as an argument
+curl -fsSL https://raw.githubusercontent.com/kldzj/pzmod/main/install.sh | bash -s -- /home/user/bin/pzmod
+```
+
 > Note: v2 is currently in pre-release. Bug reports and feedback are welcome.
