@@ -1,6 +1,6 @@
 ## pzmod
 
-![Project Banner showing usage example](/banner.png?raw=true)
+![Project Banner showing usage example](/.github/banner.png?raw=true)
 
 **pzmod** is a simple Project Zomboid server mods manager that allows you to easily install and manage mods on your server.
 
