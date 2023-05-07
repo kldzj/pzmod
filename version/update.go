@@ -38,7 +38,7 @@ func IsLatest(current string, latest *selfupdate.Release) bool {
 
 func Update(current string, latest *selfupdate.Release, updater *selfupdate.Updater) error {
 	if IsLatest(current, latest) {
-		fmt.Printf("Current version %s is the latest", current)
+		fmt.Println("Current version", current, "is the latest")
 		return nil
 	}
 
@@ -51,6 +51,6 @@ func Update(current string, latest *selfupdate.Release, updater *selfupdate.Upda
 		return fmt.Errorf("error occurred while updating binary: %w", err)
 	}
 
-	fmt.Printf("Successfully updated to version %s", latest.Version())
+	fmt.Println("Successfully updated to version", latest.Version())
 	return nil
 }
