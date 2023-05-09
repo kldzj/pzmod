@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 get_arch() {
     local raw_arch="$(uname -m)"
     local arch
