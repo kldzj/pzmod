@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/kldzj/pzmod/util"
 	"github.com/spf13/cobra"
 )
 
@@ -21,10 +20,6 @@ func SetApiKey(key string) {
 }
 
 func getApiKey() string {
-	if steamApiKey == "" {
-		cobra.CheckErr(util.ErrNoApiKey)
-	}
-
 	return steamApiKey
 }
 

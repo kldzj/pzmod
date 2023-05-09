@@ -143,6 +143,14 @@ func fetchWorkshopItemsChunk(ids []string) (*[]WorkshopItem, error) {
 		return nil, err
 	}
 
+	if req.StatusCode != 200 {
+		if req.StatusCode == 401 {
+			return nil, fmt.Errorf("steam api key is invalid")
+		}
+
+		return nil, fmt.Errorf("workshop item request failed with status code %s", req.Status)
+	}
+
 	defer req.Body.Close()
 	var response WorkshopItemResponse
 	err = json.NewDecoder(req.Body).Decode(&response)
