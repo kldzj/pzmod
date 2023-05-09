@@ -24,11 +24,56 @@ get_arch() {
 }
 
 use_sudo() {
-    if command -v sudo >/dev/null 2>&1 && [ "$(id -u)" -ne 0 ]; then
-        echo "yes"
-    else
-        echo "no"
+    local target="$1"
+    local sudo="no"
+
+    if ! command -v sudo >/dev/null; then
+        echo "$sudo"
+        return
     fi
+
+    if [ -w "$(dirname "$target")" ]; then
+        if [ -f "$target" ] && [ ! -w "$target" ]; then
+            sudo="yes"
+        fi
+    else
+        sudo="yes"
+    fi
+
+    echo "$sudo"
+}
+
+pzmod_in_path() {
+    local filename="$1"
+    local in_path="no"
+
+    if command -v "$filename" >/dev/null; then
+        in_path="yes"
+    fi
+
+    echo "$in_path"
+}
+
+finalize_installation() {
+    local sudo_needed="$1"
+    local target="${2:-/usr/local/bin/pzmod}"
+    local filename="$(basename "$target")"
+    local in_path=$(pzmod_in_path "$filename")
+
+    if [ "$sudo_needed" = "yes" ]; then
+        sudo chmod +x "$target"
+    else
+        chmod +x "$target"
+    fi
+
+    if [ "$in_path" = "no" ]; then
+        echo "Warning: $filename not found in PATH."
+        echo "You may want to add the directory to your PATH environment variable,"
+        echo "or move the executable to a directory that's already in your PATH."
+        echo
+    fi
+
+    echo "pzmod successfully installed to $target"
 }
 
 download_pzmod() {
@@ -36,7 +81,7 @@ download_pzmod() {
     local platform="$(uname -s | tr '[:upper:]' '[:lower:]')"
     local arch="$(get_arch)"
     local target="${1:-/usr/local/bin/pzmod}"
-    local sudo_needed=$(use_sudo)
+    local sudo_needed=$(use_sudo "$target")
 
     local download_url=$(curl -s "$latest_url" |
         grep "browser_download_url" |
@@ -50,12 +95,10 @@ download_pzmod() {
 
     if [ "$sudo_needed" = "yes" ]; then
         sudo wget -O "$target" "$download_url" &&
-            sudo chmod +x "$target" &&
-            echo "pzmod successfully downloaded to $target"
+            finalize_installation "$sudo_needed" "$target"
     else
         wget -O "$target" "$download_url" &&
-            chmod +x "$target" &&
-            echo "pzmod successfully downloaded to $target"
+            finalize_installation "$sudo_needed" "$target"
     fi
 }
 
