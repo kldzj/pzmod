@@ -39,6 +39,10 @@ func LoadCredentials() (string, error) {
 		return "", err
 	}
 
+	if !FileExists(path) {
+		return "", ErrNoCredFile
+	}
+
 	bytes, err := os.ReadFile(path)
 	if err != nil {
 		return "", err
@@ -51,6 +55,10 @@ func DeleteCredentials() error {
 	path, err := GetCredentialsPath()
 	if err != nil {
 		return err
+	}
+
+	if !FileExists(path) {
+		return nil
 	}
 
 	err = os.Remove(path)
