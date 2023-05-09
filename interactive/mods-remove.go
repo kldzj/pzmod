@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/AlecAivazis/survey/v2/terminal"
 	"github.com/kldzj/pzmod/ini"
 	"github.com/kldzj/pzmod/steam"
 	"github.com/kldzj/pzmod/util"
@@ -15,25 +14,27 @@ import (
 func cmdRemoveMods(cmd *cobra.Command, config *ini.ServerConfig) {
 	cont := true
 	for cont {
-		cont = removeMod(config)
-		fmt.Println()
+		err := removeMod(config)
+		if err != nil {
+			fmt.Println(util.Error, err)
+		}
+
+		cont = Continue("removing mods")
 	}
 }
 
-func removeMod(config *ini.ServerConfig) bool {
+func removeMod(config *ini.ServerConfig) error {
 	modList := getFixedArray(config, util.CfgKeyMods)
 	itemList := getFixedArray(config, util.CfgKeyItems)
 
 	if len(itemList) == 0 {
-		fmt.Println(util.Warning, "No mods found")
-		return false
+		return fmt.Errorf("no items found")
 	}
 
 	fmt.Println(util.Info, "Fetching workshop items...")
 	items, missing, err := steam.FetchWorkshopItems(itemList)
 	if err != nil {
-		fmt.Println(util.Error, err)
-		return true
+		return err
 	}
 
 	if len(*missing) > 0 {
@@ -44,8 +45,7 @@ func removeMod(config *ini.ServerConfig) bool {
 	}
 
 	if len(*items) == 0 {
-		fmt.Println(util.Warning, "No items found")
-		return true
+		return fmt.Errorf("no items found")
 	}
 
 	titles := mapTitlesToIDs(items)
@@ -69,28 +69,21 @@ func removeMod(config *ini.ServerConfig) bool {
 
 	var id string
 	err = survey.AskOne(itemPrompt, &id)
-	if err == terminal.InterruptErr || id == "" {
-		return false
-	}
-
 	if err != nil {
-		fmt.Println(util.Error, err)
-		return true
+		return err
 	}
 
-	if id == itCmdExit {
-		return false
+	if id == "" || id == itCmdExit {
+		return nil
 	}
 
 	item := steam.FindItemByID(items, id)
 	if item == nil {
-		fmt.Println(util.Error, "Could not find item")
-		return true
+		return fmt.Errorf("could not find item with id %s", id)
 	}
 
 	if !Confirm("Are you sure you want to remove "+util.Quote(item.Title)+"?", true) {
-		fmt.Println(util.Warning, "Aborted")
-		return true
+		return fmt.Errorf("removal aborted")
 	}
 
 	fmt.Println(util.Info, "Removing", util.Quote(item.Title), "...")
@@ -112,5 +105,5 @@ func removeMod(config *ini.ServerConfig) bool {
 	config.Set(util.CfgKeyItems, strings.Join(itemList, ";"))
 	config.Set(util.CfgKeyMap, strings.Join(mapList, ";"))
 
-	return Continue("removing mods")
+	return nil
 }

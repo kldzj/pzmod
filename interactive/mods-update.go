@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/AlecAivazis/survey/v2/terminal"
 	"github.com/kldzj/pzmod/ini"
 	"github.com/kldzj/pzmod/steam"
 	"github.com/kldzj/pzmod/util"
@@ -15,20 +14,23 @@ import (
 func cmdUpdateMods(cmd *cobra.Command, config *ini.ServerConfig) {
 	cont := true
 	for cont {
-		cont = updateMod(config)
-		fmt.Println()
+		err := updateMod(config)
+		if err != nil {
+			fmt.Println(util.Error, err)
+		}
+
+		cont = Continue("updating mods")
 	}
 }
 
-func updateMod(config *ini.ServerConfig) bool {
+func updateMod(config *ini.ServerConfig) error {
 	modList := getFixedArray(config, util.CfgKeyMods)
 	workshopList := getFixedArray(config, util.CfgKeyItems)
 
 	fmt.Println(util.Info, "Fetching workshop items...")
 	items, missing, err := steam.FetchWorkshopItems(workshopList)
 	if err != nil {
-		fmt.Println(util.Error, err)
-		return true
+		return err
 	}
 
 	if len(*missing) > 0 {
@@ -39,8 +41,7 @@ func updateMod(config *ini.ServerConfig) bool {
 	}
 
 	if len(*items) == 0 {
-		fmt.Println(util.Warning, "No items found")
-		return true
+		return fmt.Errorf("no items found")
 	}
 
 	titles := mapTitlesToIDs(items)
@@ -63,24 +64,17 @@ func updateMod(config *ini.ServerConfig) bool {
 	}
 
 	var id string
-	err = survey.AskOne(itemPrompt, &id)
-	if err == terminal.InterruptErr || id == "" {
-		return false
+	if err := survey.AskOne(itemPrompt, &id); err != nil {
+		return err
 	}
 
-	if err != nil {
-		fmt.Println(util.Error, err)
-		return true
-	}
-
-	if id == itCmdExit {
-		return false
+	if id == "" || id == itCmdExit {
+		return nil
 	}
 
 	item := steam.FindItemByID(items, id)
 	if item == nil {
-		fmt.Println(util.Error, "Could not find item")
-		return true
+		return fmt.Errorf("could not find item")
 	}
 
 	parsed := item.Parse()
@@ -93,18 +87,12 @@ func updateMod(config *ini.ServerConfig) bool {
 
 	var mods []string
 	err = survey.AskOne(modsPrompt, &mods)
-	if err == terminal.InterruptErr {
-		return false
-	}
-
 	if err != nil {
-		fmt.Println(util.Error, err)
-		return true
+		return err
 	}
 
 	if len(mods) == 0 {
-		fmt.Println(util.Warning, "No mods selected")
-		return true
+		return fmt.Errorf("no mods selected")
 	}
 
 	options = []string{addStart, addEnd}
@@ -117,13 +105,8 @@ func updateMod(config *ini.ServerConfig) bool {
 
 	var addAfter string
 	err = survey.AskOne(afterPrompt, &addAfter)
-	if err == terminal.InterruptErr {
-		return false
-	}
-
 	if err != nil {
-		fmt.Println(util.Error, err)
-		return true
+		return err
 	}
 
 	mods = util.Filter(mods, func(mod string) bool {
@@ -149,13 +132,8 @@ func updateMod(config *ini.ServerConfig) bool {
 
 		var maps []string
 		err = survey.AskOne(mapsPrompt, &maps)
-		if err == terminal.InterruptErr {
-			return false
-		}
-
 		if err != nil {
-			fmt.Println(util.Error, err)
-			return true
+			return err
 		}
 
 		if len(maps) == 0 {
@@ -171,14 +149,8 @@ func updateMod(config *ini.ServerConfig) bool {
 			}
 
 			var addAfter string
-			err = survey.AskOne(afterPrompt, &addAfter)
-			if err == terminal.InterruptErr {
-				return false
-			}
-
-			if err != nil {
-				fmt.Println(util.Error, err)
-				return true
+			if err := survey.AskOne(afterPrompt, &addAfter); err != nil {
+				return err
 			}
 
 			if addAfter == addEnd {
@@ -188,8 +160,7 @@ func updateMod(config *ini.ServerConfig) bool {
 			} else {
 				index := util.IndexOf(mapList, addAfter)
 				if index == -1 {
-					fmt.Println(util.Warning, "Could not find map", addAfter)
-					return true
+					return fmt.Errorf("could not find map %s", addAfter)
 				}
 
 				mapList = append(mapList[:index+1], append(maps, mapList[index+1:]...)...)
@@ -201,7 +172,7 @@ func updateMod(config *ini.ServerConfig) bool {
 
 	config.Set(util.CfgKeyMods, strings.Join(util.Dedupe(modList), ";"))
 	fmt.Println(util.OK, "Updated mod", util.Quote(item.Title))
-	return Continue("updating mods")
+	return nil
 }
 
 func mapTitlesToIDs(items *[]steam.WorkshopItem) map[string]string {

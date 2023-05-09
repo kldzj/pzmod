@@ -48,11 +48,10 @@ func addMods(config *ini.ServerConfig) bool {
 	return Continue("adding mods")
 }
 
-func addMod(id string, config *ini.ServerConfig) (bool, bool) {
+func addMod(id string, config *ini.ServerConfig) (bool, error) {
 	items, missing, err := steam.FetchWorkshopItems([]string{id})
 	if err != nil {
-		fmt.Println(util.Error, err)
-		return true, false
+		return false, err
 	}
 
 	if len(*missing) > 0 {
@@ -60,20 +59,17 @@ func addMod(id string, config *ini.ServerConfig) (bool, bool) {
 	}
 
 	if len(*items) == 0 {
-		fmt.Println(util.Warning, "No items found")
-		return true, false
+		return false, fmt.Errorf("no items found")
 	}
 
 	item := (*items)[0]
 	if item.FileType != steam.FileTypeMod {
-		fmt.Println(util.Warning, "Workshop item is not a mod")
-		return true, false
+		return false, fmt.Errorf("workshop item is not a mod")
 	}
 
 	parsed := item.Parse()
 	if len(parsed.Mods) == 0 {
-		fmt.Println(util.Warning, "Parsed workshop item has no mods")
-		return true, false
+		return false, fmt.Errorf("parsed item has no mods")
 	}
 
 	modList := getFixedArray(config, util.CfgKeyMods)
@@ -88,18 +84,12 @@ func addMod(id string, config *ini.ServerConfig) (bool, bool) {
 
 	var mods []string
 	err = survey.AskOne(modsPrompt, &mods)
-	if err == terminal.InterruptErr {
-		return false, false
-	}
-
 	if err != nil {
-		fmt.Println(util.Error, err)
-		return true, false
+		return false, err
 	}
 
 	if len(mods) == 0 {
-		fmt.Println(util.Warning, "No mods selected")
-		return true, false
+		return false, fmt.Errorf("no mods selected")
 	}
 
 	options := []string{addStart, addEnd}
@@ -112,13 +102,8 @@ func addMod(id string, config *ini.ServerConfig) (bool, bool) {
 
 	var addAfter string
 	err = survey.AskOne(afterPrompt, &addAfter)
-	if err == terminal.InterruptErr {
-		return false, false
-	}
-
 	if err != nil {
-		fmt.Println(util.Error, err)
-		return true, false
+		return false, err
 	}
 
 	if addAfter == addEnd {
@@ -128,8 +113,7 @@ func addMod(id string, config *ini.ServerConfig) (bool, bool) {
 	} else {
 		index := util.IndexOf(modList, addAfter)
 		if index == -1 {
-			fmt.Println(util.Warning, "Could not find mod", addAfter)
-			return true, false
+			return false, fmt.Errorf("could not find mod %s", addAfter)
 		}
 
 		modList = append(modList[:index+1], append(mods, modList[index+1:]...)...)
@@ -144,13 +128,8 @@ func addMod(id string, config *ini.ServerConfig) (bool, bool) {
 
 		var maps []string
 		err = survey.AskOne(mapsPrompt, &maps)
-		if err == terminal.InterruptErr {
-			return false, false
-		}
-
 		if err != nil {
-			fmt.Println(util.Error, err)
-			return true, false
+			return false, err
 		}
 
 		if len(maps) == 0 {
@@ -167,13 +146,8 @@ func addMod(id string, config *ini.ServerConfig) (bool, bool) {
 
 			var addAfter string
 			err = survey.AskOne(afterPrompt, &addAfter)
-			if err == terminal.InterruptErr {
-				return false, false
-			}
-
 			if err != nil {
-				fmt.Println(util.Error, err)
-				return true, false
+				return false, err
 			}
 
 			if addAfter == addEnd {
@@ -183,8 +157,7 @@ func addMod(id string, config *ini.ServerConfig) (bool, bool) {
 			} else {
 				index := util.IndexOf(mapList, addAfter)
 				if index == -1 {
-					fmt.Println(util.Warning, "Could not find map", addAfter)
-					return true, false
+					return false, fmt.Errorf("could not find map %s", addAfter)
 				}
 
 				mapList = append(mapList[:index+1], append(maps, mapList[index+1:]...)...)
@@ -201,10 +174,14 @@ func addMod(id string, config *ini.ServerConfig) (bool, bool) {
 
 	checkDependencies(&item, config)
 	fmt.Println(util.OK, "Added", util.Quote(item.Title))
-	return true, true
+	return true, nil
 }
 
 func getEnabledMods(mods []string, modList []string) []string {
+	if len(mods) == 1 {
+		return mods
+	}
+
 	var enabledMods []string
 	for _, mod := range mods {
 		if isEnabled(mod, modList) {
@@ -238,34 +215,56 @@ func checkDependencies(parent *steam.WorkshopItem, config *ini.ServerConfig) {
 		}
 	}
 
+	notInstalled := []string{}
 	for _, item := range *items {
-		itemList = getFixedArray(config, util.CfgKeyItems)
-		if !util.Contains(itemList, item.PublishedFileID) {
-			fmt.Println(
-				util.Warning, "Missing dependency", util.Quote(item.Title), util.Paren(item.PublishedFileID)+",",
-				"required by", util.Quote(parent.Title), util.Paren(parent.PublishedFileID),
-			)
+		if !util.Contains(*missing, item.PublishedFileID) && !util.Contains(itemList, item.PublishedFileID) {
+			notInstalled = append(notInstalled, item.PublishedFileID)
+		}
+	}
 
-			if Confirm("Add dependency?", true) {
-				_, added := addMod(item.PublishedFileID, config)
-				if !added {
-					fmt.Println(util.Warning, "Did not add dependency", util.Quote(item.Title))
-					continue
-				}
-			}
+	if len(notInstalled) == 0 {
+		return
+	}
+
+	fmt.Println(util.Warning, "Found", len(notInstalled), "missing dependencies")
+	for _, id := range notInstalled {
+		item := steam.FindItemByID(items, id)
+		if item == nil {
+			fmt.Println("  -", id)
+		} else {
+			fmt.Println("  -", item.Title, util.Paren(item.PublishedFileID))
+		}
+	}
+
+	fmt.Println()
+	if !Confirm("Install missing dependencies", true) {
+		return
+	}
+
+	for _, id := range notInstalled {
+		item := steam.FindItemByID(items, id)
+		if item == nil {
+			fmt.Println(util.Warning, "Could not find dependency", util.Paren(id))
+			continue
 		}
 
-		someEnabled := false
-		modList := getFixedArray(config, util.CfgKeyMods)
-		for _, mod := range item.Parse().Mods {
-			if isEnabled(mod, modList) {
-				someEnabled = true
+		fmt.Println(
+			util.Warning, "Missing dependency", util.Quote(item.Title), util.Paren(item.PublishedFileID)+",",
+			"required by", util.Quote(parent.Title), util.Paren(parent.PublishedFileID),
+		)
+
+		fmt.Println(util.Info, "Press Ctrl+C to skip adding this dependency")
+		added, err := addMod(item.PublishedFileID, config)
+		if err != nil {
+			fmt.Println(util.Error, err)
+			if !Continue("adding dependencies") {
 				break
 			}
 		}
 
-		if !someEnabled {
-			fmt.Println(util.Warning, "No enabled mods for", util.Quote(item.Title))
+		if !added {
+			fmt.Println(util.Warning, "Did not add dependency", util.Quote(item.Title))
+			continue
 		}
 	}
 }

@@ -58,8 +58,7 @@ func cmdAddModsFromCollection(cmd *cobra.Command, config *ini.ServerConfig) {
 		return
 	}
 
-	cmd.Println(util.Info, "If you want to skip specific mods, simply select no mod ids when prompted")
-	cmd.Println(util.Info, "Press Ctrl+C to stop adding mods, note that this will save the mods you have already added")
+	cmd.Println(util.Info, "Press Ctrl+C to skip an item")
 	cmd.Println()
 
 	addedCount := 0
@@ -72,15 +71,19 @@ func cmdAddModsFromCollection(cmd *cobra.Command, config *ini.ServerConfig) {
 		}
 
 		cmd.Println(util.Info, "Adding", util.Quote(item.Title), link)
-		cont, added := addMod(item.PublishedFileID, config)
+		added, err := addMod(item.PublishedFileID, config)
+		if err != nil {
+			cmd.Println(util.Warning, err)
+			if !Continue("adding mods") {
+				break
+			}
+		}
+
 		if added {
 			addedCount++
 		}
 
 		cmd.Println()
-		if !cont {
-			break
-		}
 	}
 
 	cmd.Println(util.OK, "Added", addedCount, "mods")
