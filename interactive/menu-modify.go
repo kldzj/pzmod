@@ -13,7 +13,6 @@ var (
 	itModCmdMods      = "List installed mods"
 	itModCmdAddMod    = "Install mod(s)"
 	itModCmdAddColl   = "Install mod(s) from collection"
-	itModCmdUpdateMod = "Update mod(s)"
 	itModCmdRemoveMod = "Remove mod(s)"
 	itModCmdCheckMods = "Check for problems"
 	itModCmdExit      = "Finish modifying"
@@ -24,7 +23,6 @@ var modCmdMap = map[string]func(*cobra.Command, *ini.ServerConfig){
 	itModCmdMods:      cmdListMods,
 	itModCmdAddMod:    cmdAddMods,
 	itModCmdAddColl:   cmdAddModsFromCollection,
-	itModCmdUpdateMod: cmdUpdateMods,
 	itModCmdRemoveMod: cmdRemoveMods,
 	itModCmdCheckMods: cmdCheckMods,
 }
@@ -46,7 +44,6 @@ func modifyMenu(cmd *cobra.Command, config *ini.ServerConfig) bool {
 			itModCmdMods,
 			itModCmdAddMod,
 			itModCmdAddColl,
-			itModCmdUpdateMod,
 			itModCmdRemoveMod,
 			itModCmdCheckMods,
 			itModCmdInfo,

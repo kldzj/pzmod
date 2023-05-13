@@ -107,3 +107,12 @@ func removeMod(config *ini.ServerConfig) error {
 
 	return nil
 }
+
+func mapTitlesToIDs(items *[]steam.WorkshopItem) map[string]string {
+	m := make(map[string]string)
+	for _, item := range *items {
+		m[item.PublishedFileID] = item.Title
+	}
+
+	return m
+}
