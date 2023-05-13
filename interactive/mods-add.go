@@ -69,7 +69,34 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 
 	parsed := item.Parse()
 	if len(parsed.Mods) == 0 {
-		return false, fmt.Errorf("parsed item has no mods")
+		fmt.Println(util.Warning, "Could not parse Mod ID(s) from item:", util.Quote(item.Title))
+		if Confirm("Would you like to enter the Mod ID manually?", true) {
+			for {
+				var mod string
+				err := survey.AskOne(&survey.Input{
+					Message: "Mod name:",
+					Help:    "Enter a single Mod ID, or leave blank to finish.",
+				}, &mod)
+
+				if err != nil {
+					return false, err
+				}
+
+				if mod == "" {
+					break
+				}
+
+				parsed.Mods = append(parsed.Mods, mod)
+				fmt.Println(util.Info, "Manually added mod:", mod)
+
+				if !Confirm("Add another Mod ID?", true) {
+					break
+				}
+			}
+		} else {
+			return false, fmt.Errorf("parsed item has no mods")
+		}
+
 	}
 
 	modList := getFixedArray(config, util.CfgKeyMods)
