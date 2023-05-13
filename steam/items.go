@@ -47,6 +47,8 @@ func (w *WorkshopItem) Parse() *ParsedWorkshopItem {
 		line = strings.TrimSpace(line)
 		if strings.HasPrefix(line, "Mod ID: ") {
 			mods = append(mods, strings.TrimPrefix(line, "Mod ID: "))
+		} else if strings.HasPrefix(line, "ModID: ") {
+			mods = append(mods, strings.TrimPrefix(line, "ModID: "))
 		} else if strings.HasPrefix(line, "Map Folder: ") {
 			maps = append(maps, strings.TrimPrefix(line, "Map Folder: "))
 		}
