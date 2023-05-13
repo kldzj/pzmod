@@ -8,6 +8,7 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/savioxavier/termlink v1.2.1
 	github.com/spf13/cobra v1.7.0
+	golang.org/x/mod v0.10.0
 )
 
 require (
@@ -29,7 +30,6 @@ require (
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/xanzy/go-gitlab v0.83.0 // indirect
 	golang.org/x/crypto v0.8.0 // indirect
-	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/oauth2 v0.7.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
