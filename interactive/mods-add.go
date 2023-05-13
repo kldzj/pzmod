@@ -83,11 +83,15 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 				}
 
 				if mod == "" {
+					if len(parsed.Mods) == 0 {
+						return false, fmt.Errorf("need at least one Mod ID to continue")
+					}
+
 					break
 				}
 
 				parsed.Mods = append(parsed.Mods, mod)
-				fmt.Println(util.Info, "Manually added mod:", mod)
+				fmt.Println(util.Info, "Manually added Mod ID:", mod)
 
 				if !Confirm("Add another Mod ID?", true) {
 					break
