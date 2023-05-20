@@ -3,7 +3,7 @@ package ini
 import (
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/kldzj/pzmod/eol"
@@ -22,13 +22,13 @@ type ServerConfig struct {
 }
 
 func NewServerConfig(configPath string) (*ServerConfig, error) {
-	if !path.IsAbs(configPath) {
+	if !filepath.IsAbs(configPath) {
 		cwd, err := os.Getwd()
 		if err != nil {
 			return nil, fmt.Errorf("failed to get current working directory: %w", err)
 		}
 
-		configPath = path.Join(cwd, configPath)
+		configPath = filepath.Join(cwd, configPath)
 	}
 
 	return &ServerConfig{Path: configPath, EOL: eol.OSDefault().String()}, nil

@@ -2,7 +2,7 @@ package interactive
 
 import (
 	"os"
-	"path"
+	"path/filepath"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/kldzj/pzmod/ini"
@@ -33,14 +33,14 @@ func cmdSaveConfigTo(cmd *cobra.Command, config *ini.ServerConfig) {
 		return
 	}
 
-	if !path.IsAbs(configPath) {
+	if !filepath.IsAbs(configPath) {
 		cwd, err := os.Getwd()
 		if err != nil {
 			cmd.Println(util.Error, err)
 			return
 		}
 
-		configPath = path.Join(cwd, configPath)
+		configPath = filepath.Join(cwd, configPath)
 	}
 
 	if util.IsDir(configPath) {

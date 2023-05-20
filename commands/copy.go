@@ -2,7 +2,7 @@ package commands
 
 import (
 	"os"
-	"path"
+	"path/filepath"
 
 	"github.com/kldzj/pzmod/config"
 	"github.com/kldzj/pzmod/util"
@@ -16,11 +16,11 @@ func cmdCopyConfig() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			config := config.UnsafeLoadConfig(cmd)
-			saveTo := path.Clean(args[0])
-			if !path.IsAbs(saveTo) {
+			saveTo := filepath.Clean(args[0])
+			if !filepath.IsAbs(saveTo) {
 				cwd, err := os.Getwd()
 				cobra.CheckErr(err)
-				saveTo = path.Join(cwd, saveTo)
+				saveTo = filepath.Join(cwd, saveTo)
 			}
 
 			if util.FileExists(saveTo) {
