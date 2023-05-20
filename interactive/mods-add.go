@@ -126,7 +126,7 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 	options := []string{addStart, addEnd}
 	options = append(options, modList...)
 	afterPrompt := &survey.Select{
-		Message: "Add after:",
+		Message: "Add mod after:",
 		Options: options,
 		Default: addEnd,
 	}
@@ -166,35 +166,34 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 		if len(maps) == 0 {
 			fmt.Println(util.Warning, "No maps selected")
 		} else {
-			options = []string{addStart, addEnd}
-			options = append(options, mapList...)
-
-			afterPrompt = &survey.Select{
-				Message: "Add after:",
-				Options: options,
-				Default: addStart,
-			}
-
-			var addAfter string
-			err = survey.AskOne(afterPrompt, &addAfter)
-			if err != nil {
-				return false, err
-			}
-
-			if addAfter == addEnd {
-				mapList = append(mapList, maps...)
-			} else if addAfter == addStart {
-				mapList = append(maps, mapList...)
-			} else {
-				index := util.IndexOf(mapList, addAfter)
-				if index == -1 {
-					return false, fmt.Errorf("could not find map %s", addAfter)
+			for _, m := range maps {
+				options = []string{addStart, addEnd}
+				options = append(options, mapList...)
+				afterPrompt = &survey.Select{
+					Message: fmt.Sprintf("Add %s after:", util.Quote(m)),
+					Options: options,
+					Default: addStart,
 				}
 
-				mapList = append(mapList[:index+1], append(maps, mapList[index+1:]...)...)
-			}
+				var addAfter string
+				err = survey.AskOne(afterPrompt, &addAfter)
+				if err != nil {
+					return false, err
+				}
 
-			config.Set(util.CfgKeyMap, strings.Join(util.Dedupe(mapList), ";"))
+				if addAfter == addEnd {
+					mapList = append(mapList, m)
+				} else if addAfter == addStart {
+					mapList = append([]string{m}, mapList...)
+				} else {
+					index := util.IndexOf(mapList, addAfter)
+					if index == -1 {
+						return false, fmt.Errorf("could not find map %s", addAfter)
+					}
+
+					mapList = append(mapList[:index+1], append([]string{m}, mapList[index+1:]...)...)
+				}
+			}
 		}
 	}
 
@@ -202,9 +201,11 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 
 	config.Set(util.CfgKeyItems, strings.Join(util.Dedupe(itemList), ";"))
 	config.Set(util.CfgKeyMods, strings.Join(util.Dedupe(modList), ";"))
+	config.Set(util.CfgKeyMap, strings.Join(util.Dedupe(mapList), ";"))
 
-	checkDependencies(&item, config)
 	fmt.Println(util.OK, "Added", util.Quote(item.Title))
+	checkDependencies(&item, config)
+
 	return true, nil
 }
 
@@ -278,11 +279,6 @@ func checkDependencies(parent *steam.WorkshopItem, config *ini.ServerConfig) {
 			fmt.Println(util.Warning, "Could not find dependency", util.Paren(id))
 			continue
 		}
-
-		fmt.Println(
-			util.Warning, "Missing dependency", util.Quote(item.Title), util.Paren(item.PublishedFileID)+",",
-			"required by", util.Quote(parent.Title), util.Paren(parent.PublishedFileID),
-		)
 
 		fmt.Println(util.Info, "Press Ctrl+C to skip adding this dependency")
 		added, err := addMod(item.PublishedFileID, config)
