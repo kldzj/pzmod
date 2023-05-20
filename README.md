@@ -58,5 +58,3 @@ chmod +x install.sh
 # To override the install location, pass the target as an argument
 ./install.sh /home/user/bin/pzmod
 ```
-
-> Note: v2 is currently in pre-release. Bug reports and feedback are welcome.
