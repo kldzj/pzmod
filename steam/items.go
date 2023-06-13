@@ -83,7 +83,7 @@ func FindItemByID(items *[]WorkshopItem, id string) *WorkshopItem {
 	return nil
 }
 
-var cache *WorkshopItemCache = NewWorkshopItemCache(60 * time.Second)
+var cache *WorkshopItemCache = NewWorkshopItemCache(5 * time.Minute)
 
 func FetchWorkshopItems(ids []string) (*[]WorkshopItem, *[]string, error) {
 	var toFetch []string
