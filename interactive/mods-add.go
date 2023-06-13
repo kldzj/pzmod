@@ -67,6 +67,9 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 		return false, fmt.Errorf("workshop item is not a mod")
 	}
 
+	fmt.Println(util.Info, "Adding", util.Quote(item.Title))
+	fmt.Println(util.Info, "Mod size:", util.HumanizeBytes(uint64(item.FileSize)), "", item.GetWorkshopLink())
+
 	parsed := item.Parse()
 	if len(parsed.Mods) == 0 {
 		fmt.Println(util.Warning, "Could not parse Mod ID(s) from item:", util.Quote(item.Title))

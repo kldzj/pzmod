@@ -7,7 +7,6 @@ import (
 	"github.com/kldzj/pzmod/ini"
 	"github.com/kldzj/pzmod/steam"
 	"github.com/kldzj/pzmod/util"
-	"github.com/savioxavier/termlink"
 	"github.com/spf13/cobra"
 )
 
@@ -70,15 +69,8 @@ func addModsFromCollection(id string, config *ini.ServerConfig) int {
 
 	addedCount := 0
 	for _, item := range *items {
-		link := item.GetWorkshopUrl()
-		if termlink.SupportsHyperlinks() {
-			link = termlink.Link("(workshop page)", link)
-		} else {
-			link = util.Paren(link)
-		}
-
+		link := item.GetWorkshopLink()
 		if item.FileType == steam.FileTypeMod {
-			fmt.Println(util.Info, "Adding", util.Quote(item.Title), link)
 			added, err := addMod(item.PublishedFileID, config)
 			if err != nil {
 				fmt.Println(util.Warning, err)

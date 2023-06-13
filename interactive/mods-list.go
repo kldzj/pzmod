@@ -27,9 +27,11 @@ func cmdListMods(cmd *cobra.Command, config *ini.ServerConfig) {
 		cmd.Println(util.Warning, "Could not fetch workshop item", item)
 	}
 
-	for idx, item := range *items {
+	var totalSize uint64
+	for _, item := range *items {
+		totalSize += uint64(item.FileSize)
 		parsed := item.Parse()
-		cmd.Println(util.Bold(item.Title), "("+item.PublishedFileID+")")
+		cmd.Println(util.Bold(item.Title), "("+item.PublishedFileID+")", item.GetWorkshopLink())
 
 		if len(parsed.Mods) > 0 {
 			cmd.Println(" ", util.Underline("Available mods"))
@@ -55,8 +57,11 @@ func cmdListMods(cmd *cobra.Command, config *ini.ServerConfig) {
 			}
 		}
 
-		if idx < len(*items)-1 {
-			cmd.Println()
-		}
+		cmd.Println()
+	}
+
+	cmd.Println(util.Info, "Total size of all mods:", util.HumanizeBytes(totalSize))
+	if len(*missing) > 0 {
+		cmd.Println(util.Warning, "This does not include the", len(*missing), "missing workshop item(s)")
 	}
 }

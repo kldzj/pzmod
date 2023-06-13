@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/kldzj/pzmod/util"
+	"github.com/savioxavier/termlink"
 )
 
 type WorkshopItemChild struct {
@@ -17,6 +18,7 @@ type WorkshopItemChild struct {
 type WorkshopItem struct {
 	Result          uint8               `json:"result"`
 	FileType        uint8               `json:"file_type"`
+	FileSize        ItemSize            `json:"file_size"`
 	PublishedFileID string              `json:"publishedfileid"`
 	Creator         string              `json:"creator,omitempty"`
 	Description     string              `json:"file_description,omitempty"`
@@ -71,6 +73,17 @@ func (w *WorkshopItem) GetChildIDs() []string {
 
 func (w *WorkshopItem) GetWorkshopUrl() string {
 	return fmt.Sprintf("https://steamcommunity.com/sharedfiles/filedetails/?id=%s", w.PublishedFileID)
+}
+
+func (w *WorkshopItem) GetWorkshopLink() string {
+	link := w.GetWorkshopUrl()
+	if termlink.SupportsHyperlinks() {
+		link = termlink.Link("(workshop page)", link)
+	} else {
+		link = util.Paren(link)
+	}
+
+	return link
 }
 
 func FindItemByID(items *[]WorkshopItem, id string) *WorkshopItem {
