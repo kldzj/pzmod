@@ -19,7 +19,12 @@ func cmdRemoveMods(cmd *cobra.Command, config *ini.ServerConfig) {
 			fmt.Println(util.Error, err)
 		}
 
-		cont = Continue("removing mods")
+		if config.GetOrDefault(util.CfgKeyMods, "") != "" {
+			cont = Continue("removing mods")
+		} else {
+			fmt.Println(util.Info, "No more mods to remove")
+			cont = false
+		}
 	}
 }
 
@@ -54,6 +59,21 @@ func removeMod(config *ini.ServerConfig) error {
 	itemPrompt := &survey.Select{
 		Message: "Select mod to remove:",
 		Options: options,
+		Filter: func(filter, value string, index int) bool {
+			if value == itCmdExit {
+				return true
+			}
+
+			if strings.Contains(strings.ToLower(value), strings.ToLower(filter)) {
+				return true
+			}
+
+			if title, ok := titles[value]; ok {
+				return strings.Contains(strings.ToLower(title), strings.ToLower(filter))
+			}
+
+			return false
+		},
 		Description: func(value string, index int) string {
 			if value == itCmdExit {
 				return "Stop removing mods"
