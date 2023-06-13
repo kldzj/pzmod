@@ -100,23 +100,26 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 		} else {
 			return false, fmt.Errorf("parsed item has no mods")
 		}
-
 	}
 
 	modList := getFixedArray(config, util.CfgKeyMods)
 	itemList := getFixedArray(config, util.CfgKeyItems)
 	mapList := getMapList(config)
 
-	modsPrompt := &survey.MultiSelect{
-		Message: "Select mods to add:",
-		Options: parsed.Mods,
-		Default: getEnabledMods(parsed.Mods, modList),
-	}
-
 	var mods []string
-	err = survey.AskOne(modsPrompt, &mods)
-	if err != nil {
-		return false, err
+	if len(parsed.Mods) == 1 {
+		mods = parsed.Mods
+	} else {
+		modsPrompt := &survey.MultiSelect{
+			Message: "Select mods to add:",
+			Options: parsed.Mods,
+			Default: getEnabledMods(parsed.Mods, modList),
+		}
+
+		err = survey.AskOne(modsPrompt, &mods)
+		if err != nil {
+			return false, err
+		}
 	}
 
 	if len(mods) == 0 {
@@ -127,6 +130,7 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 	options = append(options, modList...)
 	afterPrompt := &survey.Select{
 		Message: "Add mod after:",
+		Help:    "Press Ctrl+C to cancel adding this mod.",
 		Options: options,
 		Default: addEnd,
 	}
