@@ -145,15 +145,23 @@ func addMod(id string, config *ini.ServerConfig) (bool, error) {
 	}
 
 	if addAfter == addEnd {
+		for i := range mods {
+			mods[i] = id + "\\" + mods[i]
+		}
 		modList = append(modList, mods...)
 	} else if addAfter == addStart {
+		for i := range mods {
+			mods[i] = id + "\\" + mods[i]
+		}
 		modList = append(mods, modList...)
 	} else {
 		index := util.IndexOf(modList, addAfter)
 		if index == -1 {
 			return false, fmt.Errorf("could not find mod %s", addAfter)
 		}
-
+		for i := range mods {
+			mods[i] = id + "\\" + mods[i]
+		}
 		modList = append(modList[:index+1], append(mods, modList[index+1:]...)...)
 	}
 
