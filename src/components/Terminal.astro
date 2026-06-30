@@ -1,0 +1,30 @@
+---
+// A faux terminal-window chrome around a screenshot/GIF.
+interface Props {
+  src: string;
+  alt: string;
+  title?: string;
+  loading?: 'eager' | 'lazy';
+  width?: number;
+  height?: number;
+}
+const { src, alt, title = 'pzmod', loading = 'lazy', width = 1200, height = 720 } = Astro.props;
+---
+
+<figure class="overflow-hidden rounded-xl border border-border bg-elevated shadow-2xl shadow-black/40">
+  <div class="flex items-center gap-2 border-b border-border bg-surface px-4 py-2.5">
+    <span class="h-3 w-3 rounded-full bg-error/80"></span>
+    <span class="h-3 w-3 rounded-full bg-warn/80"></span>
+    <span class="h-3 w-3 rounded-full bg-ok/80"></span>
+    <span class="ml-2 font-mono text-xs text-muted">{title}</span>
+  </div>
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding="async"
+    class="block w-full"
+  />
+</figure>

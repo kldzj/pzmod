@@ -1,0 +1,27 @@
+---
+const sponsor = 'https://github.com/sponsors/kldzj';
+---
+
+<section id="sponsor" class="relative mx-auto max-w-6xl px-6 py-12">
+  <div class="glow-card relative overflow-hidden rounded-2xl border border-accent/30 bg-surface px-8 py-12 text-center sm:px-12">
+    <div class="glow pointer-events-none absolute inset-x-0 top-0 h-48"></div>
+    <div class="relative">
+      <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-2xl text-accent-bright" aria-hidden="true">♥</div>
+      <h2 class="mt-5 text-2xl font-bold tracking-tight sm:text-3xl">pzmod is free and open source</h2>
+      <p class="mx-auto mt-3 max-w-xl text-muted">
+        It’s built and maintained in the open. If pzmod saves you time running your server,
+        sponsoring on GitHub keeps it improving: new features, fixes, and support for whatever
+        Project Zomboid ships next.
+      </p>
+      <a
+        href={sponsor}
+        target="_blank"
+        rel="noopener"
+        class="mt-7 inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-bg transition-colors hover:bg-accent-bright"
+      >
+        <span aria-hidden="true">♥</span> Sponsor pzmod
+      </a>
+      <p class="mt-3 font-mono text-xs text-muted">github.com/sponsors/kldzj</p>
+    </div>
+  </div>
+</section>

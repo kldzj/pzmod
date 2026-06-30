@@ -1,0 +1,47 @@
+---
+const faqs = [
+  {
+    q: 'Is it safe to use on my live server config?',
+    a: 'Yes. pzmod never writes to your file until you explicitly save, and it takes a timestamped backup before every write. You can restore any previous version in one step.',
+  },
+  {
+    q: 'Will it reformat my servertest.ini?',
+    a: 'No. Comments, key order, and line endings are preserved byte-for-byte. pzmod only re-renders the specific values you changed; everything else stays exactly as it was.',
+  },
+  {
+    q: 'Does it support Build 42?',
+    a: 'Yes, both Build 41 and Build 42, including the new \\ModID and WorkshopID\\ModID reference format. It matches and validates mods by their logical mod ID and warns about Build 42 compatibility.',
+  },
+  {
+    q: 'Is it free?',
+    a: 'pzmod is free and open source under the MIT license. If it saves you time, sponsoring on GitHub directly funds its continued development.',
+  },
+  {
+    q: 'How do I update?',
+    a: 'Re-run the install command, or download the latest binary from the releases page. Tagged release builds can also check for and apply updates themselves.',
+  },
+  {
+    q: 'Where does pzmod store its data?',
+    a: 'Profiles, your Steam API key, and backups live under your OS config directory (for example ~/.config/pzmod on Linux). Your server config stays wherever you keep it.',
+  },
+];
+---
+
+<section id="faq" class="relative mx-auto max-w-3xl px-6 py-20 sm:py-24">
+  <div class="text-center">
+    <p class="font-mono text-sm text-accent">FAQ</p>
+    <h2 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Questions, answered</h2>
+  </div>
+
+  <div class="mt-12 divide-y divide-border/70 overflow-hidden rounded-xl border border-border bg-surface/50">
+    {faqs.map((f) => (
+      <details class="group">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 font-medium text-fg transition-colors hover:text-accent-bright">
+          <span>{f.q}</span>
+          <span class="shrink-0 font-mono text-accent transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
+        </summary>
+        <p class="px-6 pb-5 leading-relaxed text-muted">{f.a}</p>
+      </details>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+
+/* Design tokens: mirror the pzmod TUI palette. */
+@theme {
+  --color-bg: #14141a;
+  --color-surface: #1b1b22;
+  --color-elevated: #20202a;
+  --color-border: #2a2a35;
+  --color-accent: #9a8cff;
+  --color-accent-bright: #c2b8ff;
+  --color-muted: #9aa0a6;
+  --color-fg: #e6e6ea;
+  --color-ok: #7ee787;
+  --color-warn: #e3b341;
+  --color-error: #ff7b72;
+
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem; /* offset for the sticky nav when jumping to anchors */
+  background-color: var(--color-bg);
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+  color: var(--color-accent-bright);
+}
+
+/* Thin, themed scrollbar. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+/* Reusable bits. */
+.glow {
+  background:
+    radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 70%);
+}
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.9rem;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -18px color-mix(in srgb, var(--color-accent) 60%, black);
+}

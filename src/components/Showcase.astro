@@ -1,0 +1,62 @@
+---
+const shots = [
+  {
+    src: '/filter.gif',
+    alt: 'Press / to filter a long list of installed mods',
+    eyebrow: 'Filter',
+    title: 'Find any mod, instantly',
+    body: 'Long mod list? Press / and start typing. Installed mods, search results, and load order all narrow live as you type. No scrolling, no squinting.',
+  },
+  {
+    src: '/loadorder.gif',
+    alt: 'Get a framework-first load-order suggestion and apply it',
+    eyebrow: 'Load order',
+    title: 'Order that loads in the right sequence',
+    body: 'Press s for a framework-first suggestion that pulls shared libraries ahead of the mods that need them, then preview the change and apply it in one keystroke.',
+  },
+  {
+    src: '/validate.gif',
+    alt: 'Validate catches missing dependencies and compatibility problems',
+    eyebrow: 'Validate',
+    title: 'Catch problems before you boot',
+    body: 'A dry run flags missing dependencies, unknown mod IDs, delisted items, bad map order, and Build 42 compatibility, with one-key fixes, so you find issues here instead of in the server log.',
+  },
+  {
+    src: '/backups.gif',
+    alt: 'Every save snapshots the config; restore in one step',
+    eyebrow: 'Backups',
+    title: 'Never lose a working config',
+    body: 'Every save takes a timestamped snapshot first. Made a change you regret? Roll back to any previous version in one step.',
+  },
+];
+---
+
+<section class="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="font-mono text-sm text-accent">In action</p>
+    <h2 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">See it work</h2>
+  </div>
+
+  <div class="mt-16 space-y-20">
+    {shots.map((s, i) => (
+      <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+        <div class={i % 2 === 1 ? 'lg:order-2' : ''}>
+          <p class="font-mono text-sm text-accent">{s.eyebrow}</p>
+          <h3 class="mt-2 text-2xl font-bold tracking-tight">{s.title}</h3>
+          <p class="mt-4 leading-relaxed text-muted">{s.body}</p>
+        </div>
+        <div class={i % 2 === 1 ? 'lg:order-1' : ''}>
+          <img
+            src={s.src}
+            alt={s.alt}
+            width={1200}
+            height={720}
+            loading="lazy"
+            decoding="async"
+            class="w-full rounded-xl border border-border shadow-xl shadow-black/30"
+          />
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

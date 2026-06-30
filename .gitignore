@@ -1,0 +1,17 @@
+# build output
+dist/
+# install scripts: fetched from the main repo at build time (npm prebuild),
+# never committed here — the code branch is the single source.
+public/install.sh
+public/install.ps1
+# dependencies
+node_modules/
+# astro
+.astro/
+# environment
+.env
+.env.production
+# logs
+npm-debug.log*
+# os
+.DS_Store

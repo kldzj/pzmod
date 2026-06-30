@@ -1,0 +1,30 @@
+---
+const github = 'https://github.com/kldzj/pzmod';
+const links = [
+  { label: 'GitHub', href: github },
+  { label: 'Releases', href: github + '/releases' },
+  { label: 'Sponsor', href: 'https://github.com/sponsors/kldzj' },
+  { label: 'License', href: github + '/blob/main/LICENSE' },
+];
+---
+
+<footer class="border-t border-border/60">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-10 sm:flex-row">
+    <div class="text-center sm:text-left">
+      <a href="#top" class="flex items-center justify-center gap-2 font-mono font-bold sm:justify-start">
+        <span class="text-accent">◆</span> pzmod
+      </a>
+      <p class="mt-1 font-mono text-xs text-muted">this is how you modded.</p>
+    </div>
+
+    <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+      {links.map((l) => (
+        <a href={l.href} target="_blank" rel="noopener" class="text-muted transition-colors hover:text-fg">{l.label}</a>
+      ))}
+    </nav>
+
+    <p class="font-mono text-xs text-muted">
+      built by <a href="https://github.com/kldzj" target="_blank" rel="noopener" class="text-accent-bright underline-offset-4 hover:underline">kldzj</a>
+    </p>
+  </div>
+</footer>

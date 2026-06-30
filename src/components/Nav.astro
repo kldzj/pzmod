@@ -1,0 +1,33 @@
+---
+const github = 'https://github.com/kldzj/pzmod';
+const sponsor = 'https://github.com/sponsors/kldzj';
+---
+
+<header class="sticky top-0 z-50 border-b border-border/70 bg-bg/80 backdrop-blur-md">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
+    <a href="#top" class="group flex items-center gap-2 font-mono text-lg font-bold tracking-tight">
+      <span class="text-accent transition-transform group-hover:rotate-90">◆</span>
+      <span>pzmod</span>
+    </a>
+
+    <div class="flex items-center gap-1 sm:gap-2">
+      <a href="#features" class="hidden rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg md:inline-block">Features</a>
+      <a href="#install" class="hidden rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg md:inline-block">Install</a>
+      <a href="#faq" class="hidden rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg md:inline-block">FAQ</a>
+      <a
+        href={github}
+        target="_blank"
+        rel="noopener"
+        class="rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg"
+      >GitHub</a>
+      <a
+        href={sponsor}
+        target="_blank"
+        rel="noopener"
+        class="ml-1 inline-flex items-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-3.5 py-2 text-sm font-medium text-accent-bright transition-colors hover:bg-accent/20"
+      >
+        <span aria-hidden="true">♥</span> Sponsor
+      </a>
+    </div>
+  </nav>
+</header>

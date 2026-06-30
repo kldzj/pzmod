@@ -1,0 +1,66 @@
+---
+import Terminal from './Terminal.astro';
+const github = 'https://github.com/kldzj/pzmod';
+const sponsor = 'https://github.com/sponsors/kldzj';
+---
+
+<section id="top" class="relative overflow-hidden">
+  <div class="glow pointer-events-none absolute inset-x-0 top-0 h-[480px]"></div>
+
+  <div class="relative mx-auto max-w-6xl px-6 pb-16 pt-24 text-center sm:pt-32">
+    <h1 class="font-mono text-5xl font-bold tracking-tight sm:text-7xl">
+      <span class="text-accent" aria-hidden="true">◆</span>
+      <span class="bg-gradient-to-b from-fg to-muted bg-clip-text text-transparent">pzmod</span>
+    </h1>
+    <p class="mt-4 font-mono text-base text-accent-bright sm:text-lg">this is how you modded.</p>
+
+    <p class="mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted">
+      A keyboard-driven terminal app (plus a scriptable CLI) for managing the mods on
+      a <span class="text-fg">Project Zomboid</span> dedicated server. Search the Workshop,
+      resolve dependencies, order mods, validate before you boot, and keep timestamped
+      backups, <span class="text-fg">all while preserving your <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-sm text-accent-bright">servertest.ini</code> byte-for-byte.</span>
+    </p>
+
+    <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+      <a
+        href="#install"
+        class="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-bg transition-colors hover:bg-accent-bright"
+      >
+        Get started <span aria-hidden="true">→</span>
+      </a>
+      <a
+        href={github}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-5 py-3 text-sm font-semibold text-fg transition-colors hover:border-accent/40"
+      >
+        View on GitHub
+      </a>
+      <a
+        href={sponsor}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-5 py-3 text-sm font-semibold text-accent-bright transition-colors hover:bg-accent/20"
+      >
+        <span aria-hidden="true">♥</span> Sponsor
+      </a>
+    </div>
+
+    <div class="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-xs text-muted">
+      <span>open source · MIT</span>
+      <span class="text-border">|</span>
+      <span>Linux · macOS · Windows</span>
+      <span class="text-border">|</span>
+      <span>Build 41 <span class="text-accent">&</span> 42</span>
+    </div>
+  </div>
+
+  <div class="relative mx-auto max-w-5xl px-6 pb-20">
+    <Terminal
+      src="/hero.gif"
+      alt="pzmod: open a server, search the Workshop, order mods, validate, and save with a backup"
+      title="pzmod · Demo Server"
+      loading="eager"
+    />
+  </div>
+</section>

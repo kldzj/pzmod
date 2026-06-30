@@ -1,0 +1,35 @@
+---
+const features = [
+  { glyph: '⌕', title: 'Workshop search & browse', body: 'Find mods by name and read their details right in the terminal, no copying IDs from the browser.' },
+  { glyph: '↳', title: 'Dependency auto-resolution', body: 'Pulls in required items (and their dependencies) so nothing is missing when your server boots.' },
+  { glyph: '↕', title: 'Load-order management', body: 'Reorder mods by hand or get a framework-first suggestion that loads libraries before what needs them.' },
+  { glyph: '/', title: 'Type-to-filter', body: 'Press / on any long list to narrow it instantly. Installed mods, search results, load order: all filterable.' },
+  { glyph: '✓', title: 'Dry-run validation', body: 'Catch missing dependencies, unknown mod IDs, delisted items, and bad map order before you launch.' },
+  { glyph: '⟲', title: 'Backups & rollback', body: 'Every save snapshots your config first. Restore any previous version in one step.' },
+  { glyph: '⊞', title: 'Multiple server profiles', body: 'Manage several servers from one place, each with its own file, build, and backups.' },
+  { glyph: '⚑', title: 'Build 41 & 42 aware', body: 'First-class support for both builds, including the new Build 42 \\ModID reference format and compat hints.' },
+  { glyph: '≡', title: 'Byte-exact config edits', body: 'Comments, key order, and line endings are preserved exactly. pzmod only rewrites what you changed.' },
+];
+---
+
+<section id="features" class="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="font-mono text-sm text-accent">Features</p>
+    <h2 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Everything your mod list needs</h2>
+    <p class="mt-4 text-muted">
+      One fast, keyboard-driven tool for the whole workflow, from finding a mod to booting a clean server.
+    </p>
+  </div>
+
+  <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {features.map((f) => (
+      <div class="card p-6">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg border border-accent/30 bg-accent/10 font-mono text-lg text-accent-bright">
+          {f.glyph}
+        </div>
+        <h3 class="mt-4 font-semibold text-fg">{f.title}</h3>
+        <p class="mt-2 text-sm leading-relaxed text-muted">{f.body}</p>
+      </div>
+    ))}
+  </div>
+</section>
