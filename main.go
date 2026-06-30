@@ -1,51 +1,29 @@
 package main
 
 import (
-	"github.com/kldzj/pzmod/commands"
-	"github.com/kldzj/pzmod/interactive"
-	"github.com/kldzj/pzmod/util"
-	"github.com/kldzj/pzmod/version"
-	"github.com/spf13/cobra"
+	"context"
+	"fmt"
+	"os"
+	"os/signal"
+
+	"github.com/kldzj/pzmod/internal/cli"
+	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/internal/version"
 )
 
 func main() {
-	var rootCmd = &cobra.Command{
-		Use:     "pzmod --file <server config file>",
-		Short:   "pzmod is a tool for managing Project Zomboid server mods.",
-		Version: version.Get(),
-		Example: `pzmod --file server.ini
-pzmod --file server.ini get list
-pzmod --file server.ini get name
-pzmod --file server.ini set name "My Server"`,
-		PreRun: checkForUpdate,
-		Run:    interactive.Execute,
-	}
-
-	commands.SetFileFlag(rootCmd)
-	commands.Init(rootCmd)
-	rootCmd.Execute()
-}
-
-func checkForUpdate(cmd *cobra.Command, args []string) {
-	if !version.IsSet() {
-		return
-	}
-
-	updater, err := version.NewUpdater()
+	st, err := store.New()
 	if err != nil {
-		return
+		fmt.Fprintln(os.Stderr, "pzmod:", err)
+		os.Exit(1)
 	}
 
-	ver := version.Get()
-	latest, err := version.GetLatestRelease(updater)
-	if err != nil {
-		return
-	}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
 
-	if version.IsLatest(ver, latest) {
-		return
+	root := cli.NewRootCommand(st, version.Get())
+	if err := root.ExecuteContext(ctx); err != nil {
+		fmt.Fprintln(os.Stderr, "pzmod:", err)
+		os.Exit(1)
 	}
-
-	cmd.Println(util.Info, "A new version of pzmod is available:", latest.Version())
-	cmd.Println(util.Info, "Run `pzmod update` to update to the latest version.")
 }
