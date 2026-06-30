@@ -56,7 +56,9 @@ sha256_of() {
 }
 
 main() {
-  local target os arch tag asset base tmp sudo expected actual
+  # tmp is intentionally NOT local: the EXIT trap below runs in global scope and
+  # must still see it (otherwise `set -u` trips on cleanup after a successful run).
+  local target os arch tag asset base sudo expected actual
   target="${1:-$DEFAULT_TARGET}"
   os="$(detect_os)"
   arch="$(detect_arch)"
@@ -67,7 +69,7 @@ main() {
   info "Installing pzmod ${tag} (${os}/${arch}) to ${target}"
 
   tmp="$(mktemp -d)"
-  trap 'rm -rf "$tmp"' EXIT
+  trap 'rm -rf "${tmp:-}"' EXIT
 
   curl -fSL --proto '=https' --tlsv1.2 -o "$tmp/pzmod" "${base}/${asset}" \
     || err "no prebuilt binary for ${asset} in ${tag} (see ${base})"
