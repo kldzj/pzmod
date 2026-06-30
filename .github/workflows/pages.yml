@@ -21,20 +21,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - name: Install dependencies
-        run: npm ci
+      # withastro/action defaults to Node 24 and runs `npm run build`, so the
+      # install-script prebuild fetch still runs. See:
+      # https://docs.astro.build/en/guides/deploy/github/
       - name: Build with Astro
-        run: npm run build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: withastro/action@v6
         with:
-          path: ./dist
-
+          node-version: 24
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -44,4 +37,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
