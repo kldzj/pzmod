@@ -1,2 +1,8 @@
-version/version.txt
+internal/version/version.txt
 dist/
+pzmod
+/main
+
+# GIF-generation tooling
+/vhs/
+/scripts/

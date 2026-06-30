@@ -1,60 +1,127 @@
-## pzmod
+<div align="center">
 
-![Project Banner showing usage example](/.github/banner.png?raw=true)
+# pzmod
 
-**pzmod** is a simple Project Zomboid server mods manager that allows you to easily install and manage mods on your server.
+**Project Zomboid dedicated-server mod manager** · _this is how you modded._
 
-### Features
+![pzmod: open a server, search the Workshop, order mods, validate, and save with a backup](docs/assets/hero.gif)
 
-- Validates mods against the Steam Workshop API
-- Hints at problems with in your mod list like missing dependencies
-- Allows you to safely install mods from the Steam Workshop
-- Allows you to safely remove mods
+[![Release](https://img.shields.io/github/v/release/kldzj/pzmod?sort=semver)](https://github.com/kldzj/pzmod/releases)
+[![Tests](https://github.com/kldzj/pzmod/actions/workflows/test.yml/badge.svg)](https://github.com/kldzj/pzmod/actions/workflows/test.yml)
+[![License](https://img.shields.io/github/license/kldzj/pzmod)](LICENSE)
+[![Sponsor](https://img.shields.io/github/sponsors/kldzj?logo=githubsponsors&label=sponsor)](https://github.com/sponsors/kldzj)
 
-### Usage
+</div>
+
+**pzmod** is a keyboard-driven terminal app (plus a scriptable CLI) for managing
+the mods on a Project Zomboid dedicated server. It browses the Steam Workshop,
+resolves dependencies, orders your mods, validates everything before you boot the
+server, and keeps timestamped backups, all while preserving your
+`servertest.ini` byte-for-byte.
+
+## Features
+
+- **Terminal app**: browse and manage everything from a fast, keyboard-driven UI
+- **Workshop search & browse**: find mods and add them without copying IDs
+- **Dependency auto-resolution**: pull in required items (and their deps) for you
+- **Load-order management**: reorder mods and get a framework-first suggestion
+- **Type-to-filter**: press `/` on any long list to filter instantly
+- **Dry-run validation**: catch missing deps, unknown mod IDs, delisted items, and bad map order before launch
+- **Backups & rollback**: every save snapshots the config; restore in one step
+- **Multiple server profiles**: manage several configs from one place
+- **Build 41 / Build 42 awareness**: per-profile build with compatibility hints
+- **Byte-exact config edits**: comments, ordering, and line endings are preserved
+
+## Demo
+
+Each clip is captioned with what it does. Filter a long list, get a load-order
+suggestion, validate before you boot, and snapshot every save:
+
+|  |  |
+| --- | --- |
+| ![filter installed mods with /](docs/assets/filter.gif) | ![suggest a load order](docs/assets/loadorder.gif) |
+| ![validate before you boot](docs/assets/validate.gif) | ![automatic backups](docs/assets/backups.gif) |
+
+## Install
+
+### Linux & macOS
 
 ```bash
-# Will launch in interactive mode
+curl -fsSL https://pzmod.dev/install.sh | bash
+```
+
+Installs the latest release to `/usr/local/bin` (Intel and Apple Silicon), with the
+download checksum-verified. Pass a custom path with `| bash -s -- ~/.local/bin/pzmod`.
+
+Prefer to read the script first?
+
+```bash
+curl -fsSL https://pzmod.dev/install.sh -o install.sh
+less install.sh
+bash install.sh        # optional: bash install.sh ~/.local/bin/pzmod
+```
+
+### Windows (PowerShell)
+
+```powershell
+irm https://pzmod.dev/install.ps1 | iex
+```
+
+Installs to `%LOCALAPPDATA%\pzmod` and adds it to your user PATH.
+
+### Docker
+
+A minimal multi-arch image (amd64/arm64) is published to the GitHub Container Registry:
+
+```bash
+docker run --rm -it \
+  -e PZMOD_STEAM_KEY=<key> \
+  -v "$PWD:/data" \
+  ghcr.io/kldzj/pzmod --file /data/servertest.ini validate
+```
+
+Pass your Steam key with `PZMOD_STEAM_KEY` and mount your config in. Add
+`-v pzmod:/config` to persist profiles and backups across runs.
+
+### Manual
+
+Download a binary from the [releases page](https://github.com/kldzj/pzmod/releases).
+
+## Usage
+
+```bash
+# Launch the interactive terminal app (profile picker)
+pzmod
+
+# Open a specific config directly
 pzmod --file path/to/servertest.ini
 
-# Will set the servers public name
-pzmod --file path/to/servertest.ini set name "My Server"
-
-# Will list the available keys to set through the CLI
-pzmod --file path/to/servertest.ini get list
+# Scriptable subcommands (use --file or --profile, or the default profile)
+pzmod profile add --name "My Server" --file path/to/servertest.ini --build b41
+pzmod set name "My Server"
+pzmod get list
+pzmod search hydrocraft
+pzmod mods add 2392709985 --resolve-deps
+pzmod validate              # exits non-zero on errors (CI-friendly)
+pzmod backup list
 ```
 
-A list of available commands can be found by running `pzmod --help`.
+Run `pzmod --help` for the full command list.
 
-### Requirements
+## Requirements
 
-- Steam API Key ([see here](https://steamcommunity.com/dev/apikey))
-- Installed Project Zomboid server (or at least a `servertest.ini` file)
+- A Steam Web API key ([get one here](https://steamcommunity.com/dev/apikey))
+- A Project Zomboid server install (or at least a `servertest.ini`)
 
-### Download
+## Support
 
-You can download the latest version of **pzmod** from the [releases page](https://github.com/kldzj/pzmod/releases).
+pzmod is free and open source. If it saves you time running your server,
+please consider [**sponsoring its development on GitHub**](https://github.com/sponsors/kldzj).
+It directly funds new features and maintenance. ♥
 
-Linux users can also install **pzmod** using the following command:
+## Upgrading from v2
 
-```bash
-# Will install the latest version of pzmod to /usr/local/bin
-curl -fsSL https://raw.githubusercontent.com/kldzj/pzmod/main/install.sh | bash -s
-
-# To override the install location, pass the target as an argument
-curl -fsSL https://raw.githubusercontent.com/kldzj/pzmod/main/install.sh | bash -s -- /home/user/bin/pzmod
-```
-
-or if you are more of a 'do not pipe to shell' kind of person:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/kldzj/pzmod/main/install.sh -o install.sh
-less install.sh # Read the script to make sure it is safe
-chmod +x install.sh
-
-# Will install the latest version of pzmod to /usr/local/bin
-./install.sh
-
-# To override the install location, pass the target as an argument
-./install.sh /home/user/bin/pzmod
-```
+Config now lives in `~/.config/pzmod` (`%AppData%\pzmod` on Windows). Your
+existing `~/.pzmod` API key is migrated automatically on first run. The old
+`--file` flag and the `get`/`set`/`copy`/`api-key`/`update` commands still work
+as before.

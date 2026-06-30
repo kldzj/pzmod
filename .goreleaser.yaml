@@ -1,18 +1,22 @@
+version: 2
+
 before:
   hooks:
     - go mod tidy
     - go generate ./...
-    - go test ./test
+    - go test ./...
 builds:
   - env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w
     goos:
       - linux
       - windows
       - darwin
 
 archives:
-  - format: binary
+  - formats: [binary]
     name_template: >-
       {{ .ProjectName }}_
       {{- tolower .Os }}_
@@ -21,12 +25,32 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     format_overrides:
-    - goos: windows
-      format: zip
+      - goos: windows
+        formats: [zip]
 checksum:
   name_template: 'checksums.txt'
+
+dockers_v2:
+  - images:
+      - "ghcr.io/kldzj/pzmod"
+    tags:
+      - "{{ .Version }}"
+      - "{{ if not .Prerelease }}latest{{ end }}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    dockerfile: Dockerfile
+    labels:
+      org.opencontainers.image.title: pzmod
+      org.opencontainers.image.description: Project Zomboid dedicated-server mod manager
+      org.opencontainers.image.source: https://github.com/kldzj/pzmod
+      org.opencontainers.image.licenses: MIT
+    annotations:
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:
