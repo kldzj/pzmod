@@ -105,7 +105,9 @@ func (pf *profileform) create(s *Session) tea.Cmd {
 	}); err != nil {
 		return tea.Batch(Fail(err), Pop())
 	}
-	return tea.Batch(Toast("profile added"), Pop(), func() tea.Msg { return profilesChangedMsg{} })
+	// The launcher reloads on the resumedMsg that Pop() delivers, so no explicit
+	// profilesChangedMsg is needed (and batching one here would race the Pop).
+	return tea.Batch(Toast("profile added"), Pop())
 }
 
 func (pf *profileform) View(s *Session) string {

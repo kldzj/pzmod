@@ -93,10 +93,9 @@ func (st *settings) save(s *Session) tea.Cmd {
 	}
 	// Rebuild the service layer so subsequent Steam calls use the new key.
 	s.Svc = service.New(steam.New(key), s.Store)
-	st.hasKey = true
-	st.input.SetValue("")
-	st.status, st.statusErr = "API key saved", false
-	return nil
+	// Return to the previous screen (the profile menu on first run, the dashboard
+	// from the settings jump) and confirm via a toast, since this screen goes away.
+	return tea.Batch(Toast("API key saved"), Pop())
 }
 
 func (st *settings) View(s *Session) string {

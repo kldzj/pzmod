@@ -63,6 +63,10 @@ func (l *launcher) Update(s *Session, msg tea.Msg) (Screen, tea.Cmd) {
 		return l, nil
 	case profilesChangedMsg:
 		return l, l.load(s)
+	case resumedMsg:
+		// Returning from a pushed child (e.g. the add-profile form): reload so a
+		// newly added or removed profile shows up. Cheap and idempotent.
+		return l, l.load(s)
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "up", "k":
