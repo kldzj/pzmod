@@ -1,0 +1,87 @@
+---
+// Cross-promo for zombo.id, the companion project. pzmod runs your server's
+// mod list; zombo.id is where players find that server. Styled in pzmod's design
+// language with an amber / warm-black nod to zombo.id's "Knox terminal" CRT theme.
+const url = 'https://zombo.id';
+
+// Illustrative rows for the browser peek (not live data, a stylized preview).
+const rows = [
+  { name: 'Knox County · Modded PvE', pop: '38/64', ping: '24', region: 'EU', build: 'B42' },
+  { name: 'Riverside Raiders [PvP]', pop: '11/32', ping: '58', region: 'NA', build: 'B41' },
+  { name: 'Vanilla+ Co-op', pop: '7/16', ping: '19', region: 'EU', build: 'B42' },
+];
+---
+
+<section id="zombo" class="relative mx-auto max-w-6xl px-6 py-12">
+  <div class="relative overflow-hidden rounded-2xl border border-warn/25 bg-surface px-6 py-10 sm:px-10 sm:py-12">
+    <!-- amber glow, nodding to zombo.id's amber-phosphor CRT theme -->
+    <div
+      class="pointer-events-none absolute inset-x-0 top-0 h-48"
+      style="background: radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--color-warn) 18%, transparent), transparent 70%);"
+    >
+    </div>
+
+    <div class="relative grid items-center gap-8 lg:grid-cols-[1.15fr_1fr]">
+      <div>
+        <p class="font-mono text-sm text-warn">Companion project</p>
+        <h2 class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Now put your server on the map</h2>
+        <p class="mt-3 max-w-xl leading-relaxed text-muted">
+          <a href={url} target="_blank" rel="noopener" class="font-medium text-warn underline-offset-4 hover:underline">zombo.id</a>{' '}
+          is a live browser for the entire Project Zomboid server population: survivors online, mods,
+          ping and player-count history, filterable the way the in-game browser never was. Once pzmod
+          has your mod list dialed in, zombo.id is where players find you.
+        </p>
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 rounded-lg border border-warn/40 bg-warn/10 px-5 py-2.5 text-sm font-semibold text-warn transition-colors hover:bg-warn/20"
+          >
+            Browse servers on zombo.id <span aria-hidden="true">→</span>
+          </a>
+          <span class="font-mono text-xs text-muted">zombo.id</span>
+        </div>
+      </div>
+
+      <!-- a peek "through the CRT" at the zombo.id browser (illustrative) -->
+      <figure
+        class="hidden overflow-hidden rounded-xl border border-warn/20 shadow-2xl shadow-black/40 lg:block"
+        style="background-color: #14130f;"
+        aria-hidden="true"
+      >
+        <div class="flex items-center gap-2 border-b border-warn/15 px-4 py-2.5" style="background-color: #1b1913;">
+          <span class="h-3 w-3 rounded-full bg-error/70"></span>
+          <span class="h-3 w-3 rounded-full bg-warn/70"></span>
+          <span class="h-3 w-3 rounded-full bg-ok/70"></span>
+          <span class="ml-2 font-mono text-xs" style="color: #e3b341;">zombo.id · Knox Emergency Terminal</span>
+        </div>
+        <div class="p-4 font-mono text-xs" style="color: #cdbb8a;">
+          <div class="flex items-center justify-between border-b border-warn/10 pb-3">
+            <span><span style="color:#8a7f5f;">SURV </span><span style="color:#e6e6ea;">online</span></span>
+            <span><span style="color:#8a7f5f;">NET </span><span style="color:#e6e6ea;">enclaves</span></span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="h-1.5 w-1.5 rounded-full bg-ok"></span>
+              <span style="color:#7ee787;">LIVE</span>
+            </span>
+          </div>
+          <ul class="mt-3 space-y-2">
+            {rows.map((r) => (
+              <li class="flex items-center gap-2">
+                <span style="color:#e3b341;">▸</span>
+                <span class="flex-1 truncate" style="color:#e6e6ea;">{r.name}</span>
+                <span class="tabular-nums" style="color:#8a7f5f;">{r.pop}</span>
+                <span class="tabular-nums" style="color:#8a7f5f;">{r.ping}ms</span>
+                <span style="color:#8a7f5f;">{r.region}</span>
+                <span style="color:#e3b341;">{r.build}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="mt-3 flex flex-wrap gap-2 border-t border-warn/10 pt-3" style="color:#8a7f5f;">
+            <span>modded</span><span>·</span><span>pvp</span><span>·</span><span>B42</span><span>·</span><span>your ping</span>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
