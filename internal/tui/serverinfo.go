@@ -42,8 +42,11 @@ func (si *serverinfo) Init(s *Session) tea.Cmd {
 }
 
 func (si *serverinfo) Update(s *Session, msg tea.Msg) (Screen, tea.Cmd) {
+	// esc is "back": keep whatever the user edited (huh binds the fields live) and
+	// return, rather than discarding it. Unchanged fields are left untouched so
+	// merely opening this screen and backing out never fabricates unsaved changes.
 	if k, ok := msg.(tea.KeyMsg); ok && k.String() == "esc" {
-		return si, Pop()
+		return si, si.commit(s)
 	}
 	if si.form == nil {
 		return si, nil
@@ -54,17 +57,38 @@ func (si *serverinfo) Update(s *Session, msg tea.Msg) (Screen, tea.Cmd) {
 	}
 	switch si.form.State {
 	case huh.StateCompleted:
-		cfg := s.Cfg
-		cfg.SetName(si.name)
-		cfg.SetDescription(encodeLINE(si.desc))
-		cfg.SetPublic(si.public)
-		cfg.SetPassword(si.password)
-		cfg.SetMaxPlayers(si.slots)
-		return si, tea.Batch(Toast("server info updated (unsaved)"), Pop())
+		return si, si.commit(s)
 	case huh.StateAborted:
 		return si, Pop()
 	}
 	return si, cmd
+}
+
+// commit writes back any fields that actually changed and returns the command to
+// leave the screen (with a toast only when something was applied). Comparing
+// against the current values keeps an untouched exit from marking the config
+// dirty, since the setter re-renders lines and can differ from the on-disk bytes.
+func (si *serverinfo) commit(s *Session) tea.Cmd {
+	cfg := s.Cfg
+	changed := false
+	set := func(cur, next string, apply func(string)) {
+		if next != cur {
+			apply(next)
+			changed = true
+		}
+	}
+	set(cfg.Name(), si.name, cfg.SetName)
+	set(cfg.Description(), encodeLINE(si.desc), cfg.SetDescription)
+	set(cfg.Password(), si.password, cfg.SetPassword)
+	set(cfg.MaxPlayers(), si.slots, cfg.SetMaxPlayers)
+	if si.public != cfg.Public() {
+		cfg.SetPublic(si.public)
+		changed = true
+	}
+	if changed {
+		return tea.Batch(Toast("server info updated (unsaved)"), Pop())
+	}
+	return Pop()
 }
 
 func (si *serverinfo) View(s *Session) string {
