@@ -7,9 +7,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/dustin/go-humanize"
-	"github.com/kldzj/pzmod/internal/domain"
+	"github.com/kldzj/pzmod/pkg/domain"
 	"github.com/kldzj/pzmod/internal/openurl"
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 type installedRow struct {

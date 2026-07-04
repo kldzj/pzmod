@@ -6,8 +6,8 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/kldzj/pzmod/internal/service"
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/service"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 // settings edits the Steam API key (masked) with a live test ping.

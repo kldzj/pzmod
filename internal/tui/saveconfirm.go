@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/kldzj/pzmod/internal/domain"
+	"github.com/kldzj/pzmod/pkg/domain"
 	"github.com/kldzj/pzmod/internal/pathutil"
-	"github.com/kldzj/pzmod/internal/serverconfig"
+	"github.com/kldzj/pzmod/pkg/serverconfig"
 )
 
 // saveConfirm shows a change summary before writing, with a diff one key away.

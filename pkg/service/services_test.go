@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kldzj/pzmod/internal/build"
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/modinfo"
-	"github.com/kldzj/pzmod/internal/steam"
-	"github.com/kldzj/pzmod/internal/steam/steamtest"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/build"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/modinfo"
+	"github.com/kldzj/pzmod/pkg/steam"
+	"github.com/kldzj/pzmod/pkg/steam/steamtest"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 // item builds a WorkshopItem with a description that Parse() can scrape.

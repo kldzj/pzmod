@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 // TestProfileFormCreate covers create(): ~ expansion, missing-file rejection,

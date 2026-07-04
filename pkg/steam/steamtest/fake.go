@@ -5,7 +5,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 // Fake is an in-memory steam.API. Populate Items keyed by published file ID.

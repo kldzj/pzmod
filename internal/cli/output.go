@@ -2,7 +2,7 @@ package cli
 
 import (
 	"github.com/charmbracelet/lipgloss"
-	"github.com/kldzj/pzmod/internal/domain"
+	"github.com/kldzj/pzmod/pkg/domain"
 )
 
 // Severity styles shared by CLI output. lipgloss degrades gracefully on

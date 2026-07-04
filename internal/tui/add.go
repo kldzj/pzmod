@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/kldzj/pzmod/internal/build"
-	"github.com/kldzj/pzmod/internal/domain"
+	"github.com/kldzj/pzmod/pkg/build"
+	"github.com/kldzj/pzmod/pkg/domain"
 )
 
 // quickAdd fetches a Workshop item and adds it (plus its declared mods/maps) to

@@ -7,8 +7,8 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/dustin/go-humanize"
-	"github.com/kldzj/pzmod/internal/serverconfig"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/serverconfig"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 // backups lists config snapshots and supports restore/delete/snapshot/diff,

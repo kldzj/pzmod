@@ -6,7 +6,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/kldzj/pzmod/internal/pathutil"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 // launcher is the first screen: choose or create a profile.

@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/ini"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/ini"
 )
 
 // Config wraps an ini.Document with PZ semantics and a backing file path.

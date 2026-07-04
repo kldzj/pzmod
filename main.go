@@ -7,7 +7,7 @@ import (
 	"os/signal"
 
 	"github.com/kldzj/pzmod/internal/cli"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/store"
 	"github.com/kldzj/pzmod/internal/version"
 )
 

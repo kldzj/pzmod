@@ -7,8 +7,8 @@ package build
 import (
 	"strings"
 
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 // Build identifies a Project Zomboid version line.

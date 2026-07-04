@@ -7,11 +7,11 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/dustin/go-humanize"
-	"github.com/kldzj/pzmod/internal/build"
-	"github.com/kldzj/pzmod/internal/domain"
+	"github.com/kldzj/pzmod/pkg/build"
+	"github.com/kldzj/pzmod/pkg/domain"
 	"github.com/kldzj/pzmod/internal/openurl"
-	"github.com/kldzj/pzmod/internal/service"
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/service"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 // deps resolves the dependency closure of some seed items and lets the user

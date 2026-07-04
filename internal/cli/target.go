@@ -4,12 +4,12 @@ import (
 	"errors"
 	"path/filepath"
 
-	"github.com/kldzj/pzmod/internal/build"
+	"github.com/kldzj/pzmod/pkg/build"
 	"github.com/kldzj/pzmod/internal/pathutil"
-	"github.com/kldzj/pzmod/internal/serverconfig"
-	"github.com/kldzj/pzmod/internal/service"
-	"github.com/kldzj/pzmod/internal/steam"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/serverconfig"
+	"github.com/kldzj/pzmod/pkg/service"
+	"github.com/kldzj/pzmod/pkg/steam"
+	"github.com/kldzj/pzmod/pkg/store"
 	"github.com/spf13/cobra"
 )
 

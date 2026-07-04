@@ -9,7 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/kldzj/pzmod/internal/pathutil"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 // profileform creates a new profile via a huh form (with a file browser for the

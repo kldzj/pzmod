@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/store"
 	"github.com/spf13/cobra"
 )
 
