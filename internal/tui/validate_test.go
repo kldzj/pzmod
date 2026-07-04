@@ -7,9 +7,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/exp/teatest"
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/steam"
-	"github.com/kldzj/pzmod/internal/steam/steamtest"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/steam"
+	"github.com/kldzj/pzmod/pkg/steam/steamtest"
 )
 
 // TestFindingItemID verifies that findingItemID extracts a numeric workshop ID

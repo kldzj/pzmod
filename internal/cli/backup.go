@@ -2,7 +2,7 @@ package cli
 
 import (
 	"github.com/dustin/go-humanize"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/store"
 	"github.com/spf13/cobra"
 )
 

@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/steam"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/steam"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 // SuggestLoadOrder proposes a load order for the enabled mods. It derives

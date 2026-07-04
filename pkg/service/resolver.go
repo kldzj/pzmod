@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 // ResolvePlan is a dependency-resolution Plan plus the fetched items, so the

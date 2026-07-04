@@ -3,7 +3,7 @@ package tui
 import (
 	"testing"
 
-	"github.com/kldzj/pzmod/internal/steam/steamtest"
+	"github.com/kldzj/pzmod/pkg/steam/steamtest"
 )
 
 func TestDashboardAutoValidates(t *testing.T) {

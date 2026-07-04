@@ -8,9 +8,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/kldzj/pzmod/internal/modinfo"
-	"github.com/kldzj/pzmod/internal/steam"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/modinfo"
+	"github.com/kldzj/pzmod/pkg/steam"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 // Services is the dependency-injected aggregate the presentation layers use.

@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/kldzj/pzmod/internal/domain"
+	"github.com/kldzj/pzmod/pkg/domain"
 )
 
 type listTab int

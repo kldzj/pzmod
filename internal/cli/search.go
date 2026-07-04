@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-	"github.com/kldzj/pzmod/internal/service"
-	"github.com/kldzj/pzmod/internal/steam"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/service"
+	"github.com/kldzj/pzmod/pkg/steam"
+	"github.com/kldzj/pzmod/pkg/store"
 	"github.com/spf13/cobra"
 )
 

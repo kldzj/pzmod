@@ -6,9 +6,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kldzj/pzmod/internal/build"
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/build"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 // Validate checks a ServerMods against the Steam Workshop and returns a report.

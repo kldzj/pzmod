@@ -3,8 +3,8 @@ package cli
 import (
 	"context"
 
-	"github.com/kldzj/pzmod/internal/service"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/service"
+	"github.com/kldzj/pzmod/pkg/store"
 	"github.com/kldzj/pzmod/internal/tui"
 	"github.com/spf13/cobra"
 )

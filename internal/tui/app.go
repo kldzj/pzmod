@@ -15,8 +15,8 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/kldzj/pzmod/internal/service"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/service"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 type confirmState struct {

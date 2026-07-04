@@ -8,7 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/exp/teatest"
-	"github.com/kldzj/pzmod/internal/steam/steamtest"
+	"github.com/kldzj/pzmod/pkg/steam/steamtest"
 )
 
 func TestLogoArtDimensions(t *testing.T) {

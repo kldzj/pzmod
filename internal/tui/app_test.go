@@ -10,10 +10,10 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/exp/teatest"
-	"github.com/kldzj/pzmod/internal/service"
-	"github.com/kldzj/pzmod/internal/steam"
-	"github.com/kldzj/pzmod/internal/steam/steamtest"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/service"
+	"github.com/kldzj/pzmod/pkg/steam"
+	"github.com/kldzj/pzmod/pkg/steam/steamtest"
+	"github.com/kldzj/pzmod/pkg/store"
 )
 
 func testModel(t *testing.T, fake *steamtest.Fake) (*teatest.TestModel, *model, *store.Store) {

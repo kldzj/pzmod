@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kldzj/pzmod/internal/serverconfig"
-	"github.com/kldzj/pzmod/internal/store"
+	"github.com/kldzj/pzmod/pkg/serverconfig"
+	"github.com/kldzj/pzmod/pkg/store"
 	"github.com/spf13/cobra"
 )
 

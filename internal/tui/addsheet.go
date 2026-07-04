@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/kldzj/pzmod/internal/build"
-	"github.com/kldzj/pzmod/internal/domain"
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/build"
+	"github.com/kldzj/pzmod/pkg/domain"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 type addRow struct {

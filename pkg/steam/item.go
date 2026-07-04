@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kldzj/pzmod/internal/domain"
+	"github.com/kldzj/pzmod/pkg/domain"
 )
 
 // Workshop file types returned by the Steam API.

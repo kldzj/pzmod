@@ -10,9 +10,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/dustin/go-humanize"
 	"github.com/kldzj/pzmod/internal/bbcode"
-	"github.com/kldzj/pzmod/internal/domain"
+	"github.com/kldzj/pzmod/pkg/domain"
 	"github.com/kldzj/pzmod/internal/openurl"
-	"github.com/kldzj/pzmod/internal/steam"
+	"github.com/kldzj/pzmod/pkg/steam"
 )
 
 // detail shows a single Workshop item with a scrollable description and the

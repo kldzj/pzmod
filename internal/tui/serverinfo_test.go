@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/kldzj/pzmod/internal/serverconfig"
+	"github.com/kldzj/pzmod/pkg/serverconfig"
 )
 
 func newServerInfo(t *testing.T, body string) (*Session, *serverinfo) {
