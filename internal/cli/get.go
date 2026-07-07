@@ -59,6 +59,7 @@ func newGetCmd(st *store.Store) *cobra.Command {
 			return nil
 		},
 	}
+	cmd.ValidArgsFunction = completeConfigKeys
 	addTargetFlags(cmd)
 	return cmd
 }

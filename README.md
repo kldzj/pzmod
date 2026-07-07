@@ -102,7 +102,10 @@ pzmod set name "My Server"
 pzmod get list
 pzmod search hydrocraft
 pzmod mods add 2392709985 --resolve-deps
+pzmod mods show 2392709985 # print resolved details without adding
+pzmod mods add 2392709985 --dry-run # preview what would be added, write nothing
 pzmod validate              # exits non-zero on errors (CI-friendly)
+pzmod doctor # one-shot health check (key, config, build, validation)
 pzmod backup list
 
 # Add --json to any command for machine-readable output
@@ -114,6 +117,23 @@ Run `pzmod --help` for the full command list.
 With `--json`, any command prints its result as JSON on stdout; errors print
 as `{"error":"..."}` to stderr and the exit code is preserved, so scripts can
 read stdout and gate on the exit code.
+
+## Shell completions
+
+pzmod ships completions for bash, zsh, fish, and PowerShell. Print the script for
+your shell and source it (see `pzmod completion <shell> --help` for install paths):
+
+```bash
+# bash (current shell)
+source <(pzmod completion bash)
+
+# zsh (add to a dir on $fpath, then restart the shell)
+pzmod completion zsh > "${fpath[1]}/_pzmod"
+```
+
+Completions are context-aware: `--profile` completes your profile names,
+`mods remove`/`mods show` complete installed IDs, and `get`/`set` complete the
+known config keys.
 
 ## Requirements
 

@@ -40,10 +40,20 @@ func newSetCmd(st *store.Store) *cobra.Command {
 			if !isAlias && !cfg.Document().Has(key) {
 				return fmt.Errorf("unknown key %q (try `get list`)", args[0])
 			}
+			old := cfg.GetOr(key, "")
 			value := args[1]
 			if tf, ok := setTransforms[args[0]]; ok {
 				value = tf(value)
 			}
+
+			if dryRun, _ := cmd.Flags().GetBool("dry-run"); dryRun {
+				if jsonEnabled(cmd) {
+					return emitJSON(cmd, setPreviewJSON{Key: args[0], Old: old, New: value, DryRun: true})
+				}
+				cmd.Printf("%s: %q -> %q (dry run, nothing written)\n", args[0], old, value)
+				return nil
+			}
+
 			cfg.Set(key, value)
 
 			if noSave, _ := cmd.Flags().GetBool("no-save"); noSave {
@@ -63,6 +73,8 @@ func newSetCmd(st *store.Store) *cobra.Command {
 		},
 	}
 	cmd.Flags().BoolP("no-save", "n", false, "print the result instead of writing the file")
+	cmd.Flags().Bool("dry-run", false, "show the change without writing")
+	cmd.ValidArgsFunction = completeConfigKeys
 	addTargetFlags(cmd)
 	return cmd
 }
