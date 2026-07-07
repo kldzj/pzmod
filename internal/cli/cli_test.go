@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -163,4 +164,170 @@ func contains(s []string, v string) bool {
 		}
 	}
 	return false
+}
+
+func TestModsAddDryRunDoesNotWrite(t *testing.T) {
+	st := testStore(t)
+	_ = st.SetGlobalKey("0123456789abcdef0123456789abcdef")
+	useFakeSteam(t, cannedFake())
+	const original = "WorkshopItems=\nMods=\n"
+	ini := writeINI(t, original)
+
+	out, err := run(t, st, "mods", "add", "200", "--resolve-deps", "--dry-run", "--file", ini, "--json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got resolveJSON
+	if uerr := json.Unmarshal([]byte(out), &got); uerr != nil {
+		t.Fatalf("unmarshal %q: %v", out, uerr)
+	}
+	if !got.DryRun {
+		t.Errorf("dryRun = false; want true")
+	}
+	if !contains(got.AddWorkshopItems, "100") || !contains(got.AddWorkshopItems, "200") {
+		t.Errorf("addWorkshopItems = %v; want 100 and 200", got.AddWorkshopItems)
+	}
+	data, _ := os.ReadFile(ini)
+	if string(data) != original {
+		t.Errorf("file changed under --dry-run: %q", data)
+	}
+}
+
+func TestSetDryRunDoesNotWrite(t *testing.T) {
+	st := testStore(t)
+	ini := writeINI(t, "PublicName=old\nMaxPlayers=16\n")
+
+	out, err := run(t, st, "set", "name", "new", "--dry-run", "--file", ini, "--json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got setPreviewJSON
+	if uerr := json.Unmarshal([]byte(out), &got); uerr != nil {
+		t.Fatalf("unmarshal %q: %v", out, uerr)
+	}
+	if got.Old != "old" || got.New != "new" || !got.DryRun {
+		t.Errorf("preview = %+v", got)
+	}
+	data, _ := os.ReadFile(ini)
+	if string(data) != "PublicName=old\nMaxPlayers=16\n" {
+		t.Errorf("file changed under --dry-run: %q", data)
+	}
+}
+
+func TestDoctorClean(t *testing.T) {
+	st := testStore(t)
+	_ = st.SetGlobalKey("0123456789abcdef0123456789abcdef")
+	useFakeSteam(t, cannedFake())
+	// 100 is installed with its mod id; no missing deps -> clean.
+	ini := writeINI(t, "WorkshopItems=100\nMods=CoreLib\n")
+
+	out, err := run(t, st, "doctor", "--file", ini, "--json")
+	if err != nil {
+		t.Fatalf("doctor should pass on a clean config; err=%v out=%q", err, out)
+	}
+	var got doctorJSON
+	if uerr := json.Unmarshal([]byte(out), &got); uerr != nil {
+		t.Fatalf("unmarshal %q: %v", out, uerr)
+	}
+	if !got.OK {
+		t.Errorf("ok = false; want true. checks=%+v", got.Checks)
+	}
+}
+
+func TestDoctorValidationError(t *testing.T) {
+	st := testStore(t)
+	_ = st.SetGlobalKey("0123456789abcdef0123456789abcdef")
+	useFakeSteam(t, cannedFake())
+	// 200 requires 100, which is not installed -> validation error.
+	ini := writeINI(t, "WorkshopItems=200\nMods=Weapons\n")
+
+	out, err := run(t, st, "doctor", "--file", ini, "--json")
+	if err == nil {
+		t.Errorf("doctor should exit non-zero on a validation error; out=%q", out)
+	}
+	var got doctorJSON
+	if uerr := json.Unmarshal([]byte(out), &got); uerr != nil {
+		t.Fatalf("unmarshal %q: %v", out, uerr)
+	}
+	if got.OK {
+		t.Errorf("ok = true; want false")
+	}
+}
+
+func TestDoctorOfflineSkipsValidation(t *testing.T) {
+	st := testStore(t)
+	_ = st.SetGlobalKey("0123456789abcdef0123456789abcdef")
+	useFakeSteam(t, cannedFake())
+	ini := writeINI(t, "WorkshopItems=200\nMods=Weapons\n")
+
+	out, err := run(t, st, "doctor", "--file", ini, "--offline", "--json")
+	if err != nil {
+		t.Errorf("offline doctor should not fail on validation; err=%v", err)
+	}
+	if !strings.Contains(out, "\"validation\"") || !strings.Contains(out, "\"skip\"") {
+		t.Errorf("expected validation skip in %q", out)
+	}
+}
+
+func TestDoctorBadFile(t *testing.T) {
+	st := testStore(t)
+	out, err := run(t, st, "doctor", "--file", "/no/such/server.ini", "--json")
+	if err == nil {
+		t.Errorf("doctor should exit non-zero when the config cannot load; out=%q", out)
+	}
+}
+
+func TestModsRemoveDryRunDoesNotWrite(t *testing.T) {
+	st := testStore(t)
+	ini := writeINI(t, "WorkshopItems=100;200\nMods=CoreLib;Weapons\n")
+
+	out, err := run(t, st, "mods", "remove", "100", "CoreLib", "--dry-run", "--file", ini, "--json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got removePreviewJSON
+	if uerr := json.Unmarshal([]byte(out), &got); uerr != nil {
+		t.Fatalf("unmarshal %q: %v", out, uerr)
+	}
+	if !got.DryRun || !contains(got.RemovedItems, "100") || !contains(got.RemovedMods, "CoreLib") {
+		t.Errorf("preview = %+v", got)
+	}
+	data, _ := os.ReadFile(ini)
+	if string(data) != "WorkshopItems=100;200\nMods=CoreLib;Weapons\n" {
+		t.Errorf("file changed under --dry-run: %q", data)
+	}
+}
+
+func TestCompleteProfiles(t *testing.T) {
+	st := testStore(t)
+	ini := writeINI(t, "PublicName=x\n")
+	if _, err := run(t, st, "profile", "add", "--name", "Alpha", "--file", ini); err != nil {
+		t.Fatal(err)
+	}
+	got, _ := completeProfiles(st)(nil, nil, "")
+	if !contains(got, "alpha") {
+		t.Errorf("profiles completion = %v; want alpha", got)
+	}
+}
+
+func TestCompleteInstalledIDs(t *testing.T) {
+	st := testStore(t)
+	ini := writeINI(t, "WorkshopItems=100;200\nMods=CoreLib\nMap=Springfield\n")
+	cmd := newModsRemoveCmd(st)
+	if err := cmd.Flags().Set("file", ini); err != nil {
+		t.Fatal(err)
+	}
+	got, _ := cmd.ValidArgsFunction(cmd, nil, "")
+	for _, want := range []string{"100", "200", "CoreLib", "Springfield"} {
+		if !contains(got, want) {
+			t.Errorf("installed completion missing %q in %v", want, got)
+		}
+	}
+}
+
+func TestCompleteConfigKeys(t *testing.T) {
+	got, _ := completeConfigKeys(nil, nil, "")
+	if !contains(got, "name") {
+		t.Errorf("config keys completion = %v; want name", got)
+	}
 }

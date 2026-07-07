@@ -176,3 +176,46 @@ func TestGetJSON(t *testing.T) {
 		t.Errorf("get = %+v", got)
 	}
 }
+
+func TestModsShowJSON(t *testing.T) {
+	st := testStore(t)
+	_ = st.SetGlobalKey("0123456789abcdef0123456789abcdef")
+	useFakeSteam(t, cannedFake())
+
+	out, err := run(t, st, "mods", "show", "200", "--json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got modShowResultJSON
+	if err := json.Unmarshal([]byte(out), &got); err != nil {
+		t.Fatalf("unmarshal %q: %v", out, err)
+	}
+	if len(got.Items) != 1 {
+		t.Fatalf("items = %+v", got.Items)
+	}
+	it := got.Items[0]
+	if it.ID != "200" || it.Title != "Weapons" || it.Type != "mod" {
+		t.Errorf("item = %+v", it)
+	}
+	if !contains(it.ModIDs, "Weapons") {
+		t.Errorf("modIds = %v", it.ModIDs)
+	}
+}
+
+func TestModsShowMissing(t *testing.T) {
+	st := testStore(t)
+	_ = st.SetGlobalKey("0123456789abcdef0123456789abcdef")
+	useFakeSteam(t, cannedFake())
+
+	out, err := run(t, st, "mods", "show", "999", "--json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got modShowResultJSON
+	if err := json.Unmarshal([]byte(out), &got); err != nil {
+		t.Fatalf("unmarshal %q: %v", out, err)
+	}
+	if !contains(got.Missing, "999") {
+		t.Errorf("missing = %v; want it to contain 999", got.Missing)
+	}
+}

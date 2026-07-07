@@ -43,9 +43,11 @@ func NewRootCommand(st *store.Store, ver string) *cobra.Command {
 		newUpdateCmd(),
 		newProfileCmd(st),
 		newValidateCmd(st),
+		newDoctorCmd(st),
 		newSearchCmd(st),
 		newBackupCmd(st),
 		newModsCmd(st),
 	)
+	registerFlagCompletions(root, st)
 	return root
 }

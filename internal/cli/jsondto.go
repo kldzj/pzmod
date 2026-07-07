@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/kldzj/pzmod/pkg/service"
+	"github.com/kldzj/pzmod/pkg/steam"
 	"github.com/kldzj/pzmod/pkg/store"
 )
 
@@ -81,6 +82,7 @@ type multiModJSON struct {
 // resolveJSON is the shape of `mods add --resolve-deps --json`.
 type resolveJSON struct {
 	Resolved         bool           `json:"resolved"`
+	DryRun           bool           `json:"dryRun"`
 	AddWorkshopItems []string       `json:"addWorkshopItems"`
 	AddMods          []string       `json:"addMods"`
 	AddMaps          []string       `json:"addMaps"`
@@ -114,4 +116,72 @@ func newResolveJSON(plan service.ResolvePlan) resolveJSON {
 type shallowAddJSON struct {
 	Added   []string `json:"added"`
 	Missing []string `json:"missing"`
+	DryRun  bool     `json:"dryRun"`
+}
+
+// modShowJSON is one item in `mods show --json`. Field names are our own, not
+// the Steam API's, matching the searchItemJSON precedent.
+type modShowJSON struct {
+	ID          string   `json:"id"`
+	Title       string   `json:"title"`
+	Type        string   `json:"type"` // "mod" | "collection"
+	FileSize    int64    `json:"fileSize"`
+	ModIDs      []string `json:"modIds"`
+	MapFolders  []string `json:"mapFolders"`
+	ChildIDs    []string `json:"childIds"`
+	Description string   `json:"description"`
+}
+
+// modShowResultJSON is the shape of `mods show --json`.
+type modShowResultJSON struct {
+	Items   []modShowJSON `json:"items"`
+	Missing []string      `json:"missing"`
+}
+
+// newModShowJSON builds a modShowJSON from a fetched Workshop item.
+func newModShowJSON(it *steam.WorkshopItem) modShowJSON {
+	parsed := it.Parse()
+	typ := "mod"
+	if it.IsCollection() {
+		typ = "collection"
+	}
+	return modShowJSON{
+		ID:          it.PublishedFileID,
+		Title:       it.Title,
+		Type:        typ,
+		FileSize:    int64(it.FileSize),
+		ModIDs:      orEmpty(parsed.Mods),
+		MapFolders:  orEmpty(parsed.Maps),
+		ChildIDs:    orEmpty(it.GetChildIDs()),
+		Description: it.Description,
+	}
+}
+
+// setPreviewJSON is the shape of `set --dry-run --json`.
+type setPreviewJSON struct {
+	Key    string `json:"key"`
+	Old    string `json:"old"`
+	New    string `json:"new"`
+	DryRun bool   `json:"dryRun"`
+}
+
+// removePreviewJSON is the shape of `mods remove --dry-run --json`.
+type removePreviewJSON struct {
+	RemovedMods  []string `json:"removedMods"`
+	RemovedItems []string `json:"removedItems"`
+	RemovedMaps  []string `json:"removedMaps"`
+	DryRun       bool     `json:"dryRun"`
+}
+
+// doctorCheckJSON is one health check in `doctor --json`.
+type doctorCheckJSON struct {
+	Name   string `json:"name"`
+	Status string `json:"status"` // ok | warn | error | skip
+	Detail string `json:"detail,omitempty"`
+}
+
+// doctorJSON is the shape of `doctor --json`.
+type doctorJSON struct {
+	Checks []doctorCheckJSON `json:"checks"`
+	OK     bool              `json:"ok"`
 }

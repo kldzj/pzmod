@@ -101,7 +101,7 @@ func newProfileAddCmd(st *store.Store) *cobra.Command {
 }
 
 func newProfileRemoveCmd(st *store.Store) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "remove <id>",
 		Short: "Remove a profile",
 		Args:  cobra.ExactArgs(1),
@@ -116,10 +116,12 @@ func newProfileRemoveCmd(st *store.Store) *cobra.Command {
 			return nil
 		},
 	}
+	cmd.ValidArgsFunction = completeProfiles(st)
+	return cmd
 }
 
 func newProfileUseCmd(st *store.Store) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "use <id>",
 		Short: "Set the default profile",
 		Args:  cobra.ExactArgs(1),
@@ -134,10 +136,12 @@ func newProfileUseCmd(st *store.Store) *cobra.Command {
 			return nil
 		},
 	}
+	cmd.ValidArgsFunction = completeProfiles(st)
+	return cmd
 }
 
 func newProfileShowCmd(st *store.Store) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "show [id]",
 		Short: "Show profile details",
 		Args:  cobra.MaximumNArgs(1),
@@ -166,6 +170,8 @@ func newProfileShowCmd(st *store.Store) *cobra.Command {
 			return nil
 		},
 	}
+	cmd.ValidArgsFunction = completeProfiles(st)
+	return cmd
 }
 
 func buildBadge(b string) string {
