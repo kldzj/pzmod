@@ -77,8 +77,16 @@ release:
   footer: |
     ## Install
 
+    Linux and macOS:
+
     ```bash
     curl -fsSL https://pzmod.dev/install.sh | bash
+    ```
+
+    Windows (PowerShell):
+
+    ```powershell
+    irm https://pzmod.dev/install.ps1 | iex
     ```
 
     Docker:
@@ -87,4 +95,9 @@ release:
     docker pull ghcr.io/kldzj/pzmod:{{ .Version }}
     ```
 
+    Or download a binary from the assets below and verify it against
+    `checksums.txt`. Already installed? Run `pzmod update`.
+
     Full documentation: https://github.com/kldzj/pzmod#readme
+
+    If pzmod saves you time, consider [sponsoring](https://github.com/sponsors/kldzj).
