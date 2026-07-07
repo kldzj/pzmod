@@ -58,6 +58,7 @@ changelog:
       - '^docs:'
       - '^test:'
       - '^workflow:'
+      - '^ci:'
   groups:
     - title: Features
       regexp: '^.*?feat(\(.+\))??:.*$'
