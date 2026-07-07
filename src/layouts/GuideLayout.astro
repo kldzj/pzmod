@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import Footer from '../components/Footer.astro';
+import InstallCommand from '../components/InstallCommand.astro';
 
 const { title, description, heading, lead, slug } = Astro.props;
 const github = 'https://github.com/kldzj/pzmod';
@@ -67,9 +68,8 @@ const breadcrumb = {
           search the Workshop, resolve dependencies, order your mods, and validate everything
           before you boot, all while keeping your <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-accent-bright">servertest.ini</code> byte-for-byte intact.
         </p>
-        <div class="mt-5 flex items-stretch overflow-hidden rounded-lg border border-border bg-surface font-mono text-sm">
-          <span class="hidden select-none items-center px-4 text-accent sm:flex" aria-hidden="true">$</span>
-          <code class="flex-1 overflow-x-auto whitespace-nowrap px-4 py-3.5 text-fg sm:pl-0">curl -fsSL https://pzmod.dev/install.sh | bash</code>
+        <div class="mt-5">
+          <InstallCommand />
         </div>
         <p class="mt-4">
           <a href="/" class="text-accent-bright underline-offset-4 hover:underline">See how pzmod works &rarr;</a>

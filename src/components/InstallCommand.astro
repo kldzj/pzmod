@@ -1,0 +1,84 @@
+---
+// OS-aware install command. Defaults to the visitor's platform (detected
+// client-side from the User-Agent, since the site is statically served) and
+// offers a manual toggle. Progressive enhancement: with JS off, the Unix
+// command shows by default.
+const bash = 'curl -fsSL https://pzmod.dev/install.sh | bash';
+const pwsh = 'irm https://pzmod.dev/install.ps1 | iex';
+---
+
+<div data-install data-cmd-unix={bash} data-cmd-win={pwsh}>
+  <div class="mb-3 inline-flex rounded-lg border border-border bg-surface p-0.5 text-sm">
+    <button type="button" data-os="unix" class="os-tab rounded-md px-3 py-1.5 font-medium">Linux / macOS</button>
+    <button type="button" data-os="win" class="os-tab rounded-md px-3 py-1.5 font-medium">Windows</button>
+  </div>
+
+  <div class="flex items-stretch overflow-hidden rounded-lg border border-border bg-surface font-mono text-sm">
+    <span data-prompt class="hidden select-none items-center px-4 text-accent sm:flex" aria-hidden="true">$</span>
+    <code data-cmd class="flex-1 overflow-x-auto whitespace-nowrap px-4 py-3.5 text-fg sm:pl-0">{bash}</code>
+    <button
+      type="button"
+      data-copy
+      aria-label="Copy install command"
+      class="flex shrink-0 items-center gap-1.5 border-l border-border bg-elevated px-4 text-xs font-medium text-muted transition-colors hover:bg-accent/10 hover:text-accent-bright"
+    >
+      <span data-copy-label>Copy</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .os-tab {
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+  .os-tab:hover { color: var(--color-fg); }
+  .os-tab[data-active] {
+    color: var(--color-accent-bright);
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  }
+</style>
+
+<script>
+  function wireInstall(root: HTMLElement) {
+    const codeEl = root.querySelector<HTMLElement>('[data-cmd]');
+    const promptEl = root.querySelector<HTMLElement>('[data-prompt]');
+    const tabs = Array.from(root.querySelectorAll<HTMLElement>('.os-tab'));
+    if (!codeEl) return;
+    const cmds: Record<string, string> = {
+      unix: root.dataset.cmdUnix ?? '',
+      win: root.dataset.cmdWin ?? '',
+    };
+    const prompts: Record<string, string> = { unix: '$', win: 'PS>' };
+
+    function select(os: string) {
+      if (!cmds[os]) return;
+      codeEl!.textContent = cmds[os];
+      if (promptEl) promptEl.textContent = prompts[os];
+      tabs.forEach((t) => t.toggleAttribute('data-active', t.dataset.os === os));
+    }
+
+    tabs.forEach((t) => t.addEventListener('click', () => select(t.dataset.os ?? 'unix')));
+
+    const isWin = /Windows|Win64|Win32|WOW64/i.test(navigator.userAgent || '');
+    select(isWin ? 'win' : 'unix');
+
+    const copyBtn = root.querySelector<HTMLElement>('[data-copy]');
+    const label = root.querySelector<HTMLElement>('[data-copy-label]');
+    copyBtn?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(codeEl!.textContent ?? '');
+        if (label) {
+          const prev = label.textContent;
+          label.textContent = '✓ Copied';
+          setTimeout(() => { label.textContent = prev; }, 1600);
+        }
+      } catch {
+        /* clipboard unavailable, no-op */
+      }
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-install]').forEach((el) => wireInstall(el));
+</script>

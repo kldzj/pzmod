@@ -1,5 +1,6 @@
 ---
-const install = 'curl -fsSL https://pzmod.dev/install.sh | bash';
+import InstallCommand from './InstallCommand.astro';
+
 const releases = 'https://github.com/kldzj/pzmod/releases';
 
 const steps = [
@@ -16,23 +17,10 @@ const steps = [
     <p class="mt-4 text-muted">Install on Linux or macOS with one command:</p>
   </div>
 
-  <div class="mx-auto mt-8 max-w-3xl">
-    <div class="flex items-stretch overflow-hidden rounded-lg border border-border bg-surface font-mono text-sm">
-      <span class="hidden select-none items-center px-4 text-accent sm:flex" aria-hidden="true">$</span>
-      <code id="install-cmd" class="flex-1 overflow-x-auto whitespace-nowrap px-4 py-3.5 text-fg sm:pl-0">{install}</code>
-      <button
-        id="copy-btn"
-        type="button"
-        data-cmd={install}
-        class="flex shrink-0 items-center gap-1.5 border-l border-border bg-elevated px-4 text-xs font-medium text-muted transition-colors hover:bg-accent/10 hover:text-accent-bright"
-      >
-        <span data-copy-label>Copy</span>
-      </button>
-    </div>
-    <p class="mt-3 text-center text-sm text-muted">
-      On Windows, run <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-accent-bright">irm https://pzmod.dev/install.ps1 | iex</code> in PowerShell.
-      Also available as a <a href="https://github.com/kldzj/pzmod#docker" target="_blank" rel="noopener" class="text-accent-bright underline-offset-4 hover:underline">Docker image</a>
-      or a <a href={releases} target="_blank" rel="noopener" class="text-accent-bright underline-offset-4 hover:underline">direct download</a>.
+  <div class="mx-auto mt-8 max-w-2xl">
+    <InstallCommand />
+    <p class="mt-4 text-center text-sm text-muted">
+      Also available as a <a href="https://github.com/kldzj/pzmod#docker" target="_blank" rel="noopener" class="text-accent-bright underline-offset-4 hover:underline">Docker image</a> or a <a href={releases} target="_blank" rel="noopener" class="text-accent-bright underline-offset-4 hover:underline">direct download</a>.
     </p>
   </div>
 
@@ -48,25 +36,3 @@ const steps = [
     ))}
   </div>
 </section>
-
-<script>
-  const btn = document.getElementById('copy-btn');
-  const label = btn?.querySelector('[data-copy-label]');
-  btn?.addEventListener('click', async () => {
-    const cmd = btn.getAttribute('data-cmd') ?? '';
-    try {
-      await navigator.clipboard.writeText(cmd);
-      if (label) {
-        const prev = label.textContent;
-        label.textContent = '✓ Copied';
-        btn.classList.add('text-ok');
-        setTimeout(() => {
-          label.textContent = prev;
-          btn.classList.remove('text-ok');
-        }, 1600);
-      }
-    } catch {
-      /* clipboard unavailable, no-op */
-    }
-  });
-</script>
