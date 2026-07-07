@@ -37,6 +37,13 @@ func newModsListCmd(st *store.Store) *cobra.Command {
 				return err
 			}
 			sm := cfg.ServerMods()
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, modsListJSON{
+					Mods:          orEmpty(sm.Mods),
+					WorkshopItems: orEmpty(sm.WorkshopItems),
+					Maps:          orEmpty(sm.Maps),
+				})
+			}
 			cmd.Printf("%s (%d)\n", styleInfo.Render("Mods"), len(sm.Mods))
 			for i, m := range sm.Mods {
 				cmd.Printf("  %2d. %s\n", i+1, m)
@@ -75,24 +82,38 @@ func newModsAddCmd(st *store.Store) *cobra.Command {
 			}
 			sm := cfg.ServerMods()
 
+			asJSON := jsonEnabled(cmd)
 			resolveDeps, _ := cmd.Flags().GetBool("resolve-deps")
 			var projected domain.ServerMods
+			var result any // JSON payload for the chosen path
 			if resolveDeps {
 				plan, err := svc.Resolve(cmd.Context(), args, sm)
 				if err != nil {
 					return err
 				}
 				projected = plan.Apply(sm, t.build() == build.B42)
-				printPlan(cmd, plan)
+				if asJSON {
+					result = newResolveJSON(plan)
+				} else {
+					printPlan(cmd, plan)
+				}
 			} else {
 				updated, missing, added, err := shallowAdd(cmd.Context(), svc, sm, args, t.build() == build.B42)
 				if err != nil {
 					return err
 				}
 				projected = updated
-				cmd.Printf("added %d item(s)\n", len(added))
-				if len(missing) > 0 {
-					cmd.Println(styleWarn.Render("could not fetch:"), strings.Join(missing, ", "))
+				if asJSON {
+					addedIDs := make([]string, len(added))
+					for i, it := range added {
+						addedIDs[i] = it.PublishedFileID
+					}
+					result = shallowAddJSON{Added: addedIDs, Missing: orEmpty(missing)}
+				} else {
+					cmd.Printf("added %d item(s)\n", len(added))
+					if len(missing) > 0 {
+						cmd.Println(styleWarn.Render("could not fetch:"), strings.Join(missing, ", "))
+					}
 				}
 			}
 
@@ -102,7 +123,13 @@ func newModsAddCmd(st *store.Store) *cobra.Command {
 					return err
 				}
 			}
-			return cfg.Save()
+			if err := cfg.Save(); err != nil {
+				return err
+			}
+			if asJSON {
+				return emitJSON(cmd, result)
+			}
+			return nil
 		},
 	}
 	cmd.Flags().Bool("resolve-deps", false, "also add transitive dependencies")
@@ -135,7 +162,13 @@ func newModsRemoveCmd(st *store.Store) *cobra.Command {
 					return err
 				}
 			}
-			return cfg.Save()
+			if err := cfg.Save(); err != nil {
+				return err
+			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, map[string][]string{"removed": args})
+			}
+			return nil
 		},
 	}
 	cmd.Flags().Bool("no-backup", false, "do not snapshot before saving")

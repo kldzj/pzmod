@@ -29,6 +29,12 @@ func newBackupListCmd(st *store.Store) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if jsonEnabled(cmd) {
+				if entries == nil {
+					entries = []store.BackupEntry{}
+				}
+				return emitJSON(cmd, backupListJSON{Backups: entries})
+			}
 			if len(entries) == 0 {
 				cmd.Println(styleMuted.Render("no backups yet"))
 				return nil
@@ -62,6 +68,9 @@ func newBackupSnapshotCmd(st *store.Store) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, entry)
+			}
 			cmd.Println(styleOK.Render("snapshot created"), entry.ID)
 			return nil
 		},
@@ -83,6 +92,9 @@ func newBackupRestoreCmd(st *store.Store) *cobra.Command {
 			}
 			if err := st.Restore(t.profileID(), args[0], t.iniPath()); err != nil {
 				return err
+			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, map[string]string{"restored": args[0]})
 			}
 			cmd.Println(styleOK.Render("restored"), args[0])
 			return nil

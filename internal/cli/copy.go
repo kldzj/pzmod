@@ -33,7 +33,13 @@ func newCopyCmd(st *store.Store) *cobra.Command {
 					return fmt.Errorf("%s already exists (use --force to overwrite)", dest)
 				}
 			}
-			return cfg.SaveTo(dest)
+			if err := cfg.SaveTo(dest); err != nil {
+				return err
+			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, map[string]string{"copied": dest})
+			}
+			return nil
 		},
 	}
 	cmd.Flags().BoolP("force", "F", false, "overwrite an existing destination")

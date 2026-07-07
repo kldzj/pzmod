@@ -35,6 +35,29 @@ func newValidateCmd(st *store.Store) *cobra.Command {
 			}
 
 			findings := report.Sorted()
+
+			if jsonEnabled(cmd) {
+				out := validateJSON{Findings: make([]findingJSON, 0, len(findings)), OK: !report.HasErrors()}
+				for _, f := range findings {
+					out.Findings = append(out.Findings, findingJSON{
+						Severity: f.Severity.String(),
+						Code:     f.Code,
+						Subject:  f.Subject,
+						Message:  f.Message,
+					})
+				}
+				out.Summary.Errors = report.Count(domain.SeverityError)
+				out.Summary.Warnings = report.Count(domain.SeverityWarning)
+				out.Summary.Info = report.Count(domain.SeverityInfo)
+				if err := emitJSON(cmd, out); err != nil {
+					return err
+				}
+				if report.HasErrors() {
+					return fmt.Errorf("validation failed with %d error(s)", report.Count(domain.SeverityError))
+				}
+				return nil
+			}
+
 			if len(findings) == 0 {
 				cmd.Println(styleOK.Render("OK") + " no problems found")
 				return nil

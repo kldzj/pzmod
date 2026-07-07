@@ -33,6 +33,7 @@ func NewRootCommand(st *store.Store, ver string) *cobra.Command {
 	}
 
 	addTargetFlags(root)
+	root.PersistentFlags().Bool("json", false, "output machine-readable JSON instead of styled text")
 	root.Flags().Bool("mouse", false, "enable mouse support in the terminal app (wheel scroll; may affect text selection)")
 	root.AddCommand(
 		newGetCmd(st),
