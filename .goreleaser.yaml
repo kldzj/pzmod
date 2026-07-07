@@ -55,10 +55,10 @@ changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
-      - '^workflow:'
-      - '^ci:'
+      - '^docs(\(.+\))?:'
+      - '^test(\(.+\))?:'
+      - '^workflow(\(.+\))?:'
+      - '^ci(\(.+\))?:'
   groups:
     - title: Features
       regexp: '^.*?feat(\(.+\))??:.*$'
