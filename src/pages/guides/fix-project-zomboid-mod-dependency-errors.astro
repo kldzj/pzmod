@@ -1,0 +1,56 @@
+---
+import GuideLayout from '../../layouts/GuideLayout.astro';
+---
+
+<GuideLayout
+  slug="fix-project-zomboid-mod-dependency-errors"
+  title="Fix Project Zomboid mod dependency and 'mod is missing' errors"
+  description="The common causes of Project Zomboid mod dependency errors on a dedicated server, how to diagnose each one, and how to catch them with a dry-run validation before the server boots."
+  heading="Fix mod dependency and 'mod is missing' errors"
+  lead="Most 'server won't start' mod problems trace back to a handful of causes. Here is how to find and fix each one, and how to catch them before you boot instead of after."
+>
+  <h2>The usual causes</h2>
+  <ul>
+    <li><strong>A missing Workshop item.</strong> A mod is enabled in <code>Mods=</code>, but the item that provides its dependency was never added to <code>WorkshopItems=</code>, so it never downloaded.</li>
+    <li><strong>An unknown or misspelled mod ID.</strong> A value in <code>Mods=</code> does not match any mod ID that actually shipped, often a typo or the wrong one of an item's several mod IDs.</li>
+    <li><strong>A delisted or private item.</strong> The Workshop item was removed or made private, so it can no longer download.</li>
+    <li><strong>A bad load order.</strong> A mod loads before the framework it requires. See <a href="/guides/project-zomboid-mod-load-order">load order</a>.</li>
+    <li><strong>A map problem.</strong> A map mod is missing from <code>Map=</code>, or the base map is not last.</li>
+  </ul>
+
+  <h2>Diagnosing them</h2>
+  <p>
+    The server log names the mod it choked on, but not always the reason. Work through the list
+    above: confirm every enabled mod ID has a matching Workshop item downloaded, cross-check each
+    <code>Mod ID:</code> against the Workshop description, and make sure frameworks come first. For a
+    delisted item, the Workshop page itself will be gone or private.
+  </p>
+
+  <h2>Catch them before you boot</h2>
+  <p>
+    Rather than restart the server and read logs on every change, validate the config first. pzmod's
+    dry-run validation checks the whole config without writing anything and flags:
+  </p>
+  <ul>
+    <li>missing dependencies,</li>
+    <li>unknown or misspelled mod IDs,</li>
+    <li>delisted or unavailable Workshop items,</li>
+    <li>and a bad map order.</li>
+  </ul>
+  <p>
+    It runs from the terminal app or as a scriptable command that exits non-zero on errors, so you
+    can even gate a server restart on it in CI:
+  </p>
+  <pre><code>pzmod validate</code></pre>
+  <p>
+    Fix what it flags, save (a timestamped backup is taken first), and boot with confidence.
+  </p>
+
+  <div slot="related" class="mt-14 border-t border-border/60 pt-8">
+    <p class="font-mono text-sm text-accent">Related guides</p>
+    <ul class="mt-3 space-y-2">
+      <li><a href="/guides/add-workshop-mods-to-project-zomboid-server" class="text-accent-bright underline-offset-4 hover:underline">Add Steam Workshop mods to a PZ dedicated server</a></li>
+      <li><a href="/guides/project-zomboid-mod-load-order" class="text-accent-bright underline-offset-4 hover:underline">Project Zomboid mod load order, explained</a></li>
+    </ul>
+  </div>
+</GuideLayout>

@@ -1,0 +1,86 @@
+---
+import Base from './Base.astro';
+import Footer from '../components/Footer.astro';
+
+const { title, description, heading, lead, slug } = Astro.props;
+const github = 'https://github.com/kldzj/pzmod';
+const sponsor = 'https://github.com/sponsors/kldzj';
+const canonical = new URL(`/guides/${slug}`, Astro.site).href;
+
+const article = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: heading,
+  description,
+  url: canonical,
+  mainEntityOfPage: canonical,
+  inLanguage: 'en',
+  author: { '@type': 'Person', name: 'kldzj', url: 'https://github.com/kldzj' },
+  publisher: { '@type': 'Person', name: 'kldzj' },
+  about: 'Project Zomboid dedicated-server mod management',
+};
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Guides', item: new URL('/guides', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: heading, item: canonical },
+  ],
+};
+---
+
+<Base title={title} description={description}>
+  <header class="sticky top-0 z-50 border-b border-border/70 bg-bg/80 backdrop-blur-md">
+    <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
+      <a href="/" class="group flex items-center gap-2 font-mono text-lg font-bold tracking-tight">
+        <span class="text-accent transition-transform group-hover:rotate-90">◆</span>
+        <span>pzmod</span>
+      </a>
+      <div class="flex items-center gap-1 sm:gap-2">
+        <a href="/guides" class="hidden rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg md:inline-block">Guides</a>
+        <a href="/#install" class="hidden rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg md:inline-block">Install</a>
+        <a href={github} target="_blank" rel="noopener" class="rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg">GitHub</a>
+        <a href={sponsor} target="_blank" rel="noopener" class="ml-1 inline-flex items-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-3.5 py-2 text-sm font-medium text-accent-bright transition-colors hover:bg-accent/20">
+          <span aria-hidden="true">♥</span> Sponsor
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <article class="mx-auto max-w-3xl px-6 py-16 sm:py-20">
+      <p class="font-mono text-sm text-accent">
+        <a href="/guides" class="transition-colors hover:text-accent-bright">Guides</a>
+      </p>
+      <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{heading}</h1>
+      <p class="mt-4 text-lg leading-relaxed text-muted">{lead}</p>
+
+      <div class="prose mt-10">
+        <slot />
+      </div>
+
+      <div class="card mt-14 p-6 sm:p-8">
+        <h2 class="text-xl font-bold">Do it automatically with pzmod</h2>
+        <p class="mt-2 text-muted">
+          pzmod is a free, open-source terminal app and CLI that handles all of this for you:
+          search the Workshop, resolve dependencies, order your mods, and validate everything
+          before you boot, all while keeping your <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-accent-bright">servertest.ini</code> byte-for-byte intact.
+        </p>
+        <div class="mt-5 flex items-stretch overflow-hidden rounded-lg border border-border bg-surface font-mono text-sm">
+          <span class="hidden select-none items-center px-4 text-accent sm:flex" aria-hidden="true">$</span>
+          <code class="flex-1 overflow-x-auto whitespace-nowrap px-4 py-3.5 text-fg sm:pl-0">curl -fsSL https://pzmod.dev/install.sh | bash</code>
+        </div>
+        <p class="mt-4">
+          <a href="/" class="text-accent-bright underline-offset-4 hover:underline">See how pzmod works &rarr;</a>
+        </p>
+      </div>
+
+      <slot name="related" />
+    </article>
+  </main>
+  <Footer />
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(article)} />
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumb)} />
+</Base>

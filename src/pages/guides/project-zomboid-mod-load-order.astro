@@ -1,0 +1,70 @@
+---
+import GuideLayout from '../../layouts/GuideLayout.astro';
+---
+
+<GuideLayout
+  slug="project-zomboid-mod-load-order"
+  title="Project Zomboid mod load order, explained (and how to get it right)"
+  description="How mod load order works on a Project Zomboid server: why the Mods= order matters, why WorkshopItems order does not, where maps fit in, and a simple rule of thumb for ordering."
+  heading="Project Zomboid mod load order, explained"
+  lead="The order of your Mods= line decides which mods load first and which overrides win. Get it wrong and you get missing dependencies or conflicting overrides; get it right and everything just works."
+>
+  <h2>What load order actually is</h2>
+  <p>
+    Load order is the <strong>order of the values in your <code>Mods=</code> line</strong>. Project
+    Zomboid enables mods left to right. Two things depend on that order:
+  </p>
+  <ul>
+    <li><strong>Dependencies:</strong> a mod that relies on a framework or library must load <em>after</em> it.</li>
+    <li><strong>Overrides:</strong> when two mods change the same file, the one later in the list wins.</li>
+  </ul>
+
+  <h2>WorkshopItems order does not matter</h2>
+  <p>
+    A common misconception is that <code>Mods=</code> and <code>WorkshopItems=</code> must line up
+    one-to-one, in the same order. They do not. <code>WorkshopItems=</code> is only a download list;
+    its order has no effect. Only the <code>Mods=</code> order is load order. (And because one
+    Workshop item can ship several mod IDs, the two lists are not even the same length. See
+    <a href="/guides/add-workshop-mods-to-project-zomboid-server">adding Workshop mods</a> for why.)
+  </p>
+
+  <h2>A rule of thumb</h2>
+  <p>Order your <code>Mods=</code> line roughly like this:</p>
+  <ol>
+    <li><strong>Libraries and frameworks first</strong> (the mods other mods list as requirements).</li>
+    <li><strong>Content mods next</strong> (weapons, vehicles, professions, and so on).</li>
+    <li><strong>Patches, tweaks, and overrides last</strong>, so their changes win.</li>
+  </ol>
+  <p>
+    You do not have to work this out by hand. A dependency-aware tool can read each mod's declared
+    requirements and suggest a framework-first order for you in one step.
+  </p>
+
+  <h2>Maps are ordered separately</h2>
+  <p>
+    Map load order is its own thing, on the <code>Map=</code> line. The rule is:
+    <strong>custom maps first, the vanilla base map last</strong>. The base map,
+    <code>Muldraugh, KY</code>, should sit at the end so custom maps can layer on top of it:
+  </p>
+  <pre><code>Map=MyCustomTown;Riverside, KY;Muldraugh, KY</code></pre>
+  <p>
+    Note that map names can contain commas (<code>Muldraugh, KY</code>), so the <code>Map=</code>
+    line separates entries with semicolons only.
+  </p>
+
+  <h2>Getting it right automatically</h2>
+  <p>
+    pzmod suggests a framework-first load order for your mods and moves vanilla base maps to the end
+    of the <code>Map=</code> line for you. You preview the suggestion, then apply it, and a
+    <a href="/guides/fix-project-zomboid-mod-dependency-errors">validation pass</a> confirms nothing
+    is out of order before you boot.
+  </p>
+
+  <div slot="related" class="mt-14 border-t border-border/60 pt-8">
+    <p class="font-mono text-sm text-accent">Related guides</p>
+    <ul class="mt-3 space-y-2">
+      <li><a href="/guides/add-workshop-mods-to-project-zomboid-server" class="text-accent-bright underline-offset-4 hover:underline">Add Steam Workshop mods to a PZ dedicated server</a></li>
+      <li><a href="/guides/fix-project-zomboid-mod-dependency-errors" class="text-accent-bright underline-offset-4 hover:underline">Fix mod dependency and "mod is missing" errors</a></li>
+    </ul>
+  </div>
+</GuideLayout>

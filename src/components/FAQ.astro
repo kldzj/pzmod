@@ -25,7 +25,19 @@ const faqs = [
     a: 'Profiles, your Steam API key, and backups live under your OS config directory (for example ~/.config/pzmod on Linux). Your server config stays wherever you keep it.',
   },
 ];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
 ---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
 
 <section id="faq" class="relative mx-auto max-w-3xl px-6 py-20 sm:py-24">
   <div class="text-center">

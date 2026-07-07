@@ -1,6 +1,7 @@
 ---
 const github = 'https://github.com/kldzj/pzmod';
 const links = [
+  { label: 'Guides', href: '/guides', internal: true },
   { label: 'GitHub', href: github },
   { label: 'Releases', href: github + '/releases' },
   { label: 'Sponsor', href: 'https://github.com/sponsors/kldzj' },
@@ -20,7 +21,7 @@ const links = [
 
     <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
       {links.map((l) => (
-        <a href={l.href} target="_blank" rel="noopener" class="text-muted transition-colors hover:text-fg">{l.label}</a>
+        <a href={l.href} target={l.internal ? undefined : '_blank'} rel={l.internal ? undefined : 'noopener'} class="text-muted transition-colors hover:text-fg">{l.label}</a>
       ))}
     </nav>
 

@@ -1,0 +1,86 @@
+---
+import GuideLayout from '../../layouts/GuideLayout.astro';
+---
+
+<GuideLayout
+  slug="add-workshop-mods-to-project-zomboid-server"
+  title="How to add Steam Workshop mods to a Project Zomboid dedicated server"
+  description="A step-by-step guide to adding Steam Workshop mods to a Project Zomboid dedicated server: what Mods= and WorkshopItems= do in servertest.ini, how to find mod IDs, and the mistakes to avoid."
+  heading="Add Steam Workshop mods to a Project Zomboid dedicated server"
+  lead="Every mod on a dedicated server comes down to a few lines in servertest.ini. Here is exactly what they do, how to find the right IDs, and how to edit them without breaking your server."
+>
+  <h2>Where the config lives</h2>
+  <p>
+    A Project Zomboid dedicated server keeps its settings in <code>servertest.ini</code> (or
+    <code>yourserver.ini</code> if you renamed it). It lives in the <code>Zomboid/Server</code>
+    folder under your user home:
+  </p>
+  <ul>
+    <li><strong>Linux:</strong> <code>~/Zomboid/Server/servertest.ini</code></li>
+    <li><strong>Windows:</strong> <code>C:\Users\your-user\Zomboid\Server\servertest.ini</code></li>
+  </ul>
+  <p>Always stop the server and take a copy of this file before editing it.</p>
+
+  <h2>The three lines that matter</h2>
+  <p>Mods are controlled by three keys:</p>
+  <pre><code>WorkshopItems=2392709985;2757324939
+Mods=Hydrocraft;ExtraCategory
+Map=Muldraugh, KY</code></pre>
+  <ul>
+    <li><strong><code>WorkshopItems=</code></strong> is the download list: the numeric Steam Workshop IDs the server subscribes to and downloads.</li>
+    <li><strong><code>Mods=</code></strong> is the list of logical <em>mod IDs</em> the game actually enables, and it defines <a href="/guides/project-zomboid-mod-load-order">load order</a>.</li>
+    <li><strong><code>Map=</code></strong> lists map folders, in priority order, for mods that add maps.</li>
+  </ul>
+
+  <h2>Why WorkshopItems and Mods are not the same list</h2>
+  <p>
+    This trips up almost everyone: <strong>one Workshop item can contain several mod IDs</strong>, and
+    the two lists are independent. The number in a Workshop URL
+    (<code>?id=2392709985</code>) is a <em>WorkshopItems</em> value. The <em>Mods</em> value is the
+    mod's internal ID, which the author sets and lists in the Workshop description as
+    <code>Mod ID:</code>. They rarely look alike, and a single subscription can add two or three mod
+    IDs at once. Never put a Workshop number in <code>Mods=</code>, and never put a mod ID in
+    <code>WorkshopItems=</code>.
+  </p>
+
+  <h2>Finding the IDs</h2>
+  <ol>
+    <li><strong>WorkshopItems:</strong> open the mod's Workshop page and copy the number from the URL.</li>
+    <li><strong>Mods:</strong> read the Workshop description for one or more <code>Mod ID:</code> lines and add every one of them.</li>
+    <li><strong>Map:</strong> if the description lists a <code>Map Folder:</code>, add that value to <code>Map=</code>.</li>
+  </ol>
+
+  <h2>A worked example</h2>
+  <p>
+    Say you want a mod whose Workshop URL ends in <code>?id=2757324939</code>, and whose description
+    lists <code>Mod ID: ExtraCategory</code>. You would add the number to the download list and the
+    mod ID to the enable list:
+  </p>
+  <pre><code>WorkshopItems=2392709985;2757324939
+Mods=Hydrocraft;ExtraCategory</code></pre>
+  <p>
+    Items are separated by <code>;</code> (semicolons). Map names may contain commas
+    (<code>Muldraugh, KY</code>), which is why only the <code>Map=</code> line treats commas as part
+    of a name.
+  </p>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Putting a Workshop number in <code>Mods=</code> (it belongs in <code>WorkshopItems=</code>).</li>
+    <li>Forgetting a dependency's Workshop item, so the game enables a mod whose requirement never downloaded.</li>
+    <li>Missing a second or third <code>Mod ID:</code> from a multi-mod item.</li>
+    <li>A bad <a href="/guides/project-zomboid-mod-load-order">load order</a>, where a mod loads before the framework it needs.</li>
+  </ul>
+  <p>
+    Any of these can stop the server from booting. A <a href="/guides/fix-project-zomboid-mod-dependency-errors">dependency validation pass</a>
+    catches them before you launch.
+  </p>
+
+  <div slot="related" class="mt-14 border-t border-border/60 pt-8">
+    <p class="font-mono text-sm text-accent">Related guides</p>
+    <ul class="mt-3 space-y-2">
+      <li><a href="/guides/project-zomboid-mod-load-order" class="text-accent-bright underline-offset-4 hover:underline">Project Zomboid mod load order, explained</a></li>
+      <li><a href="/guides/fix-project-zomboid-mod-dependency-errors" class="text-accent-bright underline-offset-4 hover:underline">Fix mod dependency and "mod is missing" errors</a></li>
+    </ul>
+  </div>
+</GuideLayout>
