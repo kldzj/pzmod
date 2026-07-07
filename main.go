@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/signal"
@@ -23,7 +24,14 @@ func main() {
 
 	root := cli.NewRootCommand(st, version.Get())
 	if err := root.ExecuteContext(ctx); err != nil {
-		fmt.Fprintln(os.Stderr, "pzmod:", err)
+		if cli.WantsJSON(root) {
+			enc := json.NewEncoder(os.Stderr)
+			enc.SetIndent("", "  ")
+			enc.SetEscapeHTML(false)
+			_ = enc.Encode(map[string]string{"error": err.Error()})
+		} else {
+			fmt.Fprintln(os.Stderr, "pzmod:", err)
+		}
 		os.Exit(1)
 	}
 }

@@ -19,7 +19,13 @@ func newAPIKeyCmd(st *store.Store) *cobra.Command {
 			profile, _ := cmd.Flags().GetString("profile")
 
 			if clear, _ := cmd.Flags().GetBool("clear"); clear {
-				return st.ClearKey(profile)
+				if err := st.ClearKey(profile); err != nil {
+					return err
+				}
+				if jsonEnabled(cmd) {
+					return emitJSON(cmd, map[string]bool{"cleared": true})
+				}
+				return nil
 			}
 			if len(args) == 0 || len(args[0]) != 32 {
 				return errors.New("a 32-character Steam Web API key is required")
@@ -30,6 +36,9 @@ func newAPIKeyCmd(st *store.Store) *cobra.Command {
 				}
 			} else if err := st.SetGlobalKey(args[0]); err != nil {
 				return err
+			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, map[string]bool{"saved": true})
 			}
 			cmd.Println(styleOK.Render("API key saved"))
 			return nil

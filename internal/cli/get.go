@@ -33,6 +33,9 @@ func newGetCmd(st *store.Store) *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if args[0] == "list" {
+				if jsonEnabled(cmd) {
+					return emitJSON(cmd, map[string][]string{"keys": sortedAliases()})
+				}
 				cmd.Println("Available keys:", strings.Join(sortedAliases(), ", "))
 				return nil
 			}
@@ -48,7 +51,11 @@ func newGetCmd(st *store.Store) *cobra.Command {
 			if !isAlias && !cfg.Document().Has(key) {
 				return fmt.Errorf("unknown key %q (try `get list`)", args[0])
 			}
-			cmd.Println(cfg.GetOr(key, ""))
+			value := cfg.GetOr(key, "")
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, getJSON{Key: args[0], Value: value})
+			}
+			cmd.Println(value)
 			return nil
 		},
 	}

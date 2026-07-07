@@ -33,11 +33,18 @@ func newProfileListCmd(st *store.Store) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			def, _ := st.DefaultProfile()
+			if jsonEnabled(cmd) {
+				out := profileListJSON{Profiles: make([]profileJSON, 0, len(profiles)), DefaultID: def.ID}
+				for _, p := range profiles {
+					out.Profiles = append(out.Profiles, profileJSON{Profile: p, Default: p.ID == def.ID})
+				}
+				return emitJSON(cmd, out)
+			}
 			if len(profiles) == 0 {
 				cmd.Println(styleMuted.Render("no profiles yet - add one with `pzmod profile add`"))
 				return nil
 			}
-			def, _ := st.DefaultProfile()
 			for _, p := range profiles {
 				marker := "  "
 				if p.ID == def.ID {
@@ -79,6 +86,9 @@ func newProfileAddCmd(st *store.Store) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, p)
+			}
 			cmd.Println(styleOK.Render("added profile"), p.ID)
 			return nil
 		},
@@ -99,6 +109,9 @@ func newProfileRemoveCmd(st *store.Store) *cobra.Command {
 			if err := st.RemoveProfile(args[0]); err != nil {
 				return err
 			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, map[string]string{"removed": args[0]})
+			}
 			cmd.Println(styleOK.Render("removed profile"), args[0])
 			return nil
 		},
@@ -113,6 +126,9 @@ func newProfileUseCmd(st *store.Store) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := st.SetDefaultProfile(args[0]); err != nil {
 				return err
+			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, map[string]string{"defaultId": args[0]})
 			}
 			cmd.Println(styleOK.Render("default profile is now"), args[0])
 			return nil
@@ -135,6 +151,10 @@ func newProfileShowCmd(st *store.Store) *cobra.Command {
 			}
 			if err != nil {
 				return err
+			}
+			if jsonEnabled(cmd) {
+				def, _ := st.DefaultProfile()
+				return emitJSON(cmd, profileJSON{Profile: p, Default: p.ID == def.ID})
 			}
 			cmd.Printf("ID:            %s\n", p.ID)
 			cmd.Printf("Name:          %s\n", p.Name)

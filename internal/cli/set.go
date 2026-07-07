@@ -47,10 +47,19 @@ func newSetCmd(st *store.Store) *cobra.Command {
 			cfg.Set(key, value)
 
 			if noSave, _ := cmd.Flags().GetBool("no-save"); noSave {
+				if jsonEnabled(cmd) {
+					return emitJSON(cmd, map[string]string{"config": cfg.String()})
+				}
 				cmd.Print(cfg.String())
 				return nil
 			}
-			return cfg.Save()
+			if err := cfg.Save(); err != nil {
+				return err
+			}
+			if jsonEnabled(cmd) {
+				return emitJSON(cmd, map[string]any{"key": args[0], "value": value, "saved": true})
+			}
+			return nil
 		},
 	}
 	cmd.Flags().BoolP("no-save", "n", false, "print the result instead of writing the file")

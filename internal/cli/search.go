@@ -34,6 +34,18 @@ func newSearchCmd(st *store.Store) *cobra.Command {
 				return err
 			}
 
+			if jsonEnabled(cmd) {
+				out := searchJSON{Total: page.Total, Items: make([]searchItemJSON, 0, len(page.Items))}
+				for _, it := range page.Items {
+					out.Items = append(out.Items, searchItemJSON{
+						ID:       it.PublishedFileID,
+						Title:    it.Title,
+						FileSize: int64(it.FileSize),
+					})
+				}
+				return emitJSON(cmd, out)
+			}
+
 			cmd.Printf("%s\n", styleMuted.Render(humanize.Comma(int64(page.Total))+" results"))
 			for _, it := range page.Items {
 				cmd.Printf("%s  %s  %s\n",
