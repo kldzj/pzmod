@@ -58,3 +58,33 @@ changelog:
       - '^docs:'
       - '^test:'
       - '^workflow:'
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\(.+\))??:.*$'
+      order: 0
+    - title: Bug fixes
+      regexp: '^.*?fix(\(.+\))??:.*$'
+      order: 1
+    - title: Performance
+      regexp: '^.*?perf(\(.+\))??:.*$'
+      order: 2
+    - title: Dependencies
+      regexp: '.*deps.*'
+      order: 3
+    - title: Others
+      order: 999
+release:
+  footer: |
+    ## Install
+
+    ```bash
+    curl -fsSL https://pzmod.dev/install.sh | bash
+    ```
+
+    Docker:
+
+    ```bash
+    docker pull ghcr.io/kldzj/pzmod:{{ .Version }}
+    ```
+
+    Full documentation: https://github.com/kldzj/pzmod#readme
