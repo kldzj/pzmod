@@ -104,9 +104,16 @@ pzmod search hydrocraft
 pzmod mods add 2392709985 --resolve-deps
 pzmod validate              # exits non-zero on errors (CI-friendly)
 pzmod backup list
+
+# Add --json to any command for machine-readable output
+pzmod mods list --json | jq '.mods'
 ```
 
 Run `pzmod --help` for the full command list.
+
+With `--json`, any command prints its result as JSON on stdout; errors print
+as `{"error":"..."}` to stderr and the exit code is preserved, so scripts can
+read stdout and gate on the exit code.
 
 ## Requirements
 
